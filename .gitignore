@@ -1,0 +1,17 @@
+# Gradle / Android build outputs
+.gradle/
+build/
+app/build/
+local.properties
+*.apk
+!Telegram-UI-Kit.apk
+
+# IDE
+.idea/
+*.iml
+
+# Reference screenshots
+image-search/
+
+# OS
+.DS_Store
