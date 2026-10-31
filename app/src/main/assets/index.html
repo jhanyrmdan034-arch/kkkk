@@ -9,315 +9,250 @@
 <body>
 <div id="stage">
   <div id="phone">
-    <!-- Fake status bar (as in Figma frames; hidden inside the Android app) -->
-    <div class="statusbar" id="statusbar">
-      <span id="sbTime">9:41</span>
+    <!-- iOS status bar from the kit frames (hidden inside the Android app) -->
+    <div class="ios-status" id="iosStatus" aria-hidden="true">
+      <span class="sb-time">9:41</span>
+      <span class="dynamic-island"></span>
       <span class="sb-icons">
-        <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1" opacity=".35"/></svg>
-        <svg width="16" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.6a1.9 1.9 0 1 1 0 3.8 1.9 1.9 0 0 1 0-3.8zM8 5.4c1.7 0 3.3.67 4.5 1.86l-1.77 1.79A3.9 3.9 0 0 0 8 8.1c-1.03 0-2 .34-2.73.95L3.5 7.26A6.3 6.3 0 0 1 8 5.4zM8 1c2.9 0 5.64 1.13 7.7 3.18L13.93 5.97A8.7 8.7 0 0 0 8 3.6c-2.28 0-4.37.87-5.93 2.37L.3 4.18A10.9 10.9 0 0 1 8 1z" transform="translate(0,-1)"/></svg>
-        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><path d="M23.5 4v4a2.2 2.2 0 0 0 0-4z" fill="currentColor" opacity=".4"/></svg>
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="17" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 10.8a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6zM4.9 7.4a5 5 0 0 1 6.2 0l-1.6 1.7a3.2 3.2 0 0 0-3 0L4.9 7.4zM2.3 4.5a9.4 9.4 0 0 1 11.4 0l-1.6 1.7a7.1 7.1 0 0 0-8.2 0L2.3 4.5z"/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".7" y=".7" width="22" height="11.6" rx="3.5" stroke="currentColor" opacity=".45"/><rect x="2.2" y="2.2" width="17" height="8.6" rx="2.2" fill="currentColor"/><path d="M25 4.5v4a2.3 2.3 0 0 0 0-4z" fill="currentColor" opacity=".5"/></svg>
       </span>
     </div>
 
     <main id="screens">
-
-      <!-- ============ CHATS ============ -->
+      <!-- ================= CHATS ================= -->
       <section class="screen active" id="scr-chats">
-        <header class="appbar">
-          <button class="iconbtn" id="btnDrawer" aria-label="Menu"><span class="ic" data-icon="menu"></span></button>
-          <div class="appbar-title">Telegram</div>
-          <button class="iconbtn" data-go="search" aria-label="Search"><span class="ic" data-icon="search"></span></button>
-        </header>
-        <div class="stories" id="stories"></div>
-        <nav class="tabs" id="folderTabs">
-          <button class="tab active" data-filter="all">All Chats <span class="tab-badge" id="allBadge"></span></button>
-          <button class="tab" data-filter="personal">Personal</button>
-          <button class="tab" data-filter="group">Groups</button>
-          <button class="tab" data-filter="channel">Channels</button>
-          <button class="tab" data-filter="bot">Bots</button>
-        </nav>
-        <div class="scroll" id="chatList"></div>
-        <button class="fab" data-go="contacts" aria-label="New message"><span class="ic" data-icon="edit"></span></button>
-      </section>
-
-      <!-- ============ CHAT ============ -->
-      <section class="screen" id="scr-chat">
-        <header class="appbar chatbar">
-          <button class="iconbtn" data-back aria-label="Back"><span class="ic" data-icon="back"></span></button>
-          <div class="chatbar-id" id="chatbarId">
-            <div class="avatar sm" id="chatAvatar">T</div>
-            <div class="chatbar-text">
-              <div class="chatbar-name" id="chatName">Chat</div>
-              <div class="chatbar-status" id="chatStatus">online</div>
+        <header class="chats-header" id="chatsHeader">
+          <div class="chats-top">
+            <button class="pill-btn edit-btn" id="btnEditChats">Edit</button>
+            <div class="chats-title" id="chatsTitle">
+              <span class="title-stack" aria-hidden="true"><img src="img/avatar-dino.jpg" alt=""><img src="img/avatar-cat.jpg" alt=""><img src="img/avatar-dog.jpg" alt=""></span>
+              <span>Chats</span><span class="premium-star">★</span>
+            </div>
+            <div class="header-actions">
+              <button class="mini-icon" id="btnScan" aria-label="Scan"><span data-icon="scan"></span></button>
+              <button class="mini-icon" id="btnCompose" aria-label="New message"><span data-icon="compose"></span></button>
             </div>
           </div>
-          <button class="iconbtn" id="btnCall" aria-label="Call"><span class="ic" data-icon="phone"></span></button>
-          <button class="iconbtn" id="btnChatMore" aria-label="More"><span class="ic" data-icon="more"></span></button>
+          <div class="stories" id="storyRow"></div>
+          <nav class="folder-row" id="folderRow" aria-label="Chat folders">
+            <button class="folder active" data-folder="all">All</button>
+            <button class="folder" data-folder="groups">Groups <span class="folder-badge grey">6</span></button>
+            <button class="folder" data-folder="work">WORK <span class="folder-badge blue">2</span></button>
+            <button class="folder" data-folder="bots">Bots</button>
+          </nav>
         </header>
-        <div class="scroll chat-bg" id="messages"></div>
-        <form class="inputbar" id="inputForm" autocomplete="off">
-          <button type="button" class="iconbtn dim" id="btnEmoji" aria-label="Emoji"><span class="ic" data-icon="smile"></span></button>
-          <input id="msgInput" type="text" placeholder="Message" aria-label="Message">
-          <button type="button" class="iconbtn dim" id="btnAttach" aria-label="Attach"><span class="ic" data-icon="clip"></span></button>
-          <button type="submit" class="iconbtn sendbtn" id="btnSend" aria-label="Send"><span class="ic" data-icon="mic" id="sendIcon"></span></button>
-        </form>
+        <div class="scroll main-scroll" id="chatListScroll">
+          <div id="chatList"></div>
+          <button class="archived-entry" id="btnArchived"><span class="archive-glyph" data-icon="archive"></span><span>Archived Chats</span><span class="archived-count">6</span></button>
+        </div>
+        <div class="edit-bar" id="chatEditBar">
+          <button id="btnReadAll">Read All</button><button id="btnArchiveSel">Archive</button><button class="danger" id="btnDeleteSel">Delete</button>
+        </div>
       </section>
 
-      <!-- ============ CONTACTS / NEW MESSAGE ============ -->
+      <!-- ================= CONTACTS ================= -->
       <section class="screen" id="scr-contacts">
-        <header class="appbar">
-          <button class="iconbtn" data-back aria-label="Back"><span class="ic" data-icon="back"></span></button>
-          <div class="appbar-title left">New Message</div>
-          <button class="iconbtn" aria-label="Search"><span class="ic" data-icon="search"></span></button>
-          <button class="iconbtn" aria-label="Add contact"><span class="ic" data-icon="plus"></span></button>
+        <header class="simple-header">
+          <button class="pill-btn small" data-toast="Sorted by last seen">Sort</button>
+          <div class="simple-title">Contacts</div>
+          <button class="round-btn" data-toast="Add contact" aria-label="Add contact"><span data-icon="plus"></span></button>
         </header>
-        <div class="searchfield"><span class="ic" data-icon="search"></span><input id="contactSearch" placeholder="Search"></div>
-        <div class="scroll">
-          <div class="action-row" data-toast="Create a new group"><span class="action-ic"><span class="ic" data-icon="users"></span></span>New Group</div>
-          <div class="action-row" data-toast="Start a secret chat"><span class="action-ic"><span class="ic" data-icon="lock"></span></span>New Secret Chat</div>
-          <div class="action-row" data-toast="Create a new channel"><span class="action-ic"><span class="ic" data-icon="mega"></span></span>New Channel</div>
-          <div class="list-caption">Sorted by last seen</div>
+        <div class="scroll main-scroll">
+          <button class="invite-row" data-toast="Invite Friends"><span class="invite-ic" data-icon="person-plus"></span>Invite Friends</button>
           <div id="contactList"></div>
         </div>
-        <div class="alpha-rail">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z #</div>
+        <div class="alpha-rail" aria-hidden="true">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z #</div>
       </section>
 
-      <!-- ============ PROFILE ============ -->
-      <section class="screen" id="scr-profile">
-        <div class="scroll no-bar">
-          <div class="profile-head" id="profileHead">
-            <div class="profile-head-btns">
-              <button class="iconbtn on-photo" data-back aria-label="Back"><span class="ic" data-icon="back"></span></button>
-              <span class="spacer"></span>
-              <button class="iconbtn on-photo" data-toast="Edit photo" aria-label="Edit"><span class="ic" data-icon="edit"></span></button>
-              <button class="iconbtn on-photo" id="btnProfileMore" aria-label="More"><span class="ic" data-icon="more"></span></button>
-            </div>
-            <div class="profile-head-info">
-              <div class="profile-name" id="profileName">Name</div>
-              <div class="profile-status" id="profileStatus">online</div>
-            </div>
-          </div>
-          <div class="sec profile-actions">
-            <button class="p-action" id="btnProfileMsg"><span class="ic" data-icon="chat"></span>Message</button>
-            <button class="p-action" data-toast="Notifications muted"><span class="ic" data-icon="belloff"></span>Mute</button>
-            <button class="p-action" data-toast="Calling…"><span class="ic" data-icon="phone"></span>Call</button>
-            <button class="p-action" data-toast="Starting video call…"><span class="ic" data-icon="video"></span>Video</button>
-          </div>
-          <div class="sec">
-            <div class="info-row"><div class="info-val" id="profilePhone">+1 555 010 1234</div><div class="info-label">mobile</div></div>
-            <div class="info-row"><div class="info-val">Product designer · UI kits &amp; interfaces</div><div class="info-label">bio</div></div>
-            <div class="info-row"><div class="info-val accent" id="profileUser">@username</div><div class="info-label">username</div></div>
-          </div>
-          <div class="sec">
-            <div class="srow"><span class="srow-ic"><span class="ic" data-icon="bell"></span></span><span class="srow-text">Notifications</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
-            <div class="srow" data-toast="Shared media"><span class="srow-ic"><span class="ic" data-icon="image"></span></span><span class="srow-text">Media, Files and Links</span><span class="srow-value">128</span></div>
-            <div class="srow" data-toast="Groups in common"><span class="srow-ic"><span class="ic" data-icon="users"></span></span><span class="srow-text">Groups in Common</span><span class="srow-value">3</span></div>
-          </div>
-          <div class="sec">
-            <div class="srow danger" data-toast="User blocked"><span class="srow-ic"><span class="ic" data-icon="block"></span></span><span class="srow-text">Block User</span></div>
-          </div>
-          <nav class="tabs underline" id="mediaTabs">
-            <button class="tab active">Media</button><button class="tab">Files</button><button class="tab">Links</button><button class="tab">Music</button>
-          </nav>
-          <div class="media-grid" id="mediaGrid"></div>
-        </div>
-      </section>
-
-      <!-- ============ SETTINGS ============ -->
-      <section class="screen" id="scr-settings">
-        <header class="appbar">
-          <button class="iconbtn" data-back aria-label="Back"><span class="ic" data-icon="back"></span></button>
-          <div class="appbar-title left">Settings</div>
-          <button class="iconbtn" aria-label="Search"><span class="ic" data-icon="search"></span></button>
-          <button class="iconbtn" data-toast="Edit profile" aria-label="Edit"><span class="ic" data-icon="edit"></span></button>
-        </header>
-        <div class="scroll gray">
-          <div class="sec profile-card">
-            <div class="avatar lg grad-1">A</div>
-            <div class="pc-text"><div class="pc-name">Alex Morgan</div><div class="pc-sub">online</div></div>
-            <span class="ic dim" data-icon="chev"></span>
-          </div>
-          <div class="sec">
-            <div class="info-row"><div class="info-val">+1 555 010 1234</div><div class="info-label">Tap to change phone number</div></div>
-            <div class="info-row"><div class="info-val">@Alex Morgan</div><div class="info-label">Username</div></div>
-            <div class="info-row"><div class="info-val hint-val">Bio</div><div class="info-label">Add a few words about yourself</div></div>
-          </div>
-          <div class="sec">
-            <div class="srow" data-toast="Saved Messages" data-openchat="saved"><span class="srow-ic blue"><span class="ic" data-icon="bookmark"></span></span><span class="srow-text">Saved Messages</span></div>
-            <div class="srow" data-go="calls"><span class="srow-ic green"><span class="ic" data-icon="phone"></span></span><span class="srow-text">Recent Calls</span></div>
-            <div class="srow" data-toast="Devices: 2 active sessions"><span class="srow-ic orange"><span class="ic" data-icon="monitor"></span></span><span class="srow-text">Devices</span><span class="srow-value">2</span></div>
-            <div class="srow" data-toast="Chat folders"><span class="srow-ic purple"><span class="ic" data-icon="folder"></span></span><span class="srow-text">Chat Folders</span></div>
-          </div>
-          <div class="sec">
-            <div class="srow" data-toast="Notifications and Sounds"><span class="srow-ic red"><span class="ic" data-icon="bell"></span></span><span class="srow-text">Notifications and Sounds</span></div>
-            <div class="srow" data-toast="Privacy and Security"><span class="srow-ic gray"><span class="ic" data-icon="lock"></span></span><span class="srow-text">Privacy and Security</span></div>
-            <div class="srow" data-toast="Data and Storage"><span class="srow-ic teal"><span class="ic" data-icon="data"></span></span><span class="srow-text">Data and Storage</span></div>
-            <div class="srow" data-toast="Appearance"><span class="srow-ic indigo"><span class="ic" data-icon="palette"></span></span><span class="srow-text">Appearance</span></div>
-            <div class="srow" data-toast="Language: English"><span class="srow-ic sky"><span class="ic" data-icon="globe"></span></span><span class="srow-text">Language</span><span class="srow-value">English</span></div>
-            <div class="srow" data-toast="Stickers and Emoji"><span class="srow-ic yellow"><span class="ic" data-icon="smile"></span></span><span class="srow-text">Stickers and Emoji</span></div>
-          </div>
-          <div class="sec">
-            <div class="srow" data-toast="Telegram Features"><span class="srow-ic blue"><span class="ic" data-icon="star"></span></span><span class="srow-text">Telegram Features</span></div>
-            <div class="srow" data-toast="Ask a Question"><span class="srow-ic purple"><span class="ic" data-icon="help"></span></span><span class="srow-text">Ask a Question</span></div>
-            <div class="srow" data-toast="Telegram FAQ"><span class="srow-ic teal"><span class="ic" data-icon="chat"></span></span><span class="srow-text">Telegram FAQ</span></div>
-          </div>
-          <div class="version-note">Telegram UI Kit for Android<br>UI Demo · v1.0</div>
-        </div>
-      </section>
-
-      <!-- ============ CALLS ============ -->
+      <!-- ================= CALLS ================= -->
       <section class="screen" id="scr-calls">
-        <header class="appbar">
-          <button class="iconbtn" data-back aria-label="Back"><span class="ic" data-icon="back"></span></button>
-          <div class="appbar-title left">Calls</div>
-          <button class="iconbtn" aria-label="More"><span class="ic" data-icon="more"></span></button>
+        <header class="simple-header">
+          <button class="pill-btn small" data-toast="Edit calls">Edit</button>
+          <div class="simple-title">Calls</div>
+          <button class="round-btn" data-toast="New call" aria-label="New call"><span data-icon="phone-plus"></span></button>
         </header>
-        <div class="scroll" id="callList"></div>
-        <button class="fab" data-go="contacts" aria-label="New call"><span class="ic" data-icon="phone"></span></button>
+        <div class="scroll main-scroll">
+          <div class="section-label">RECENT CALLS</div>
+          <div id="callList"></div>
+        </div>
       </section>
 
-      <!-- ============ SEARCH ============ -->
+      <!-- ================= SETTINGS / OWN PROFILE ================= -->
+      <section class="screen settings-screen" id="scr-settings">
+        <div class="scroll settings-scroll">
+          <div class="settings-head diamond-pattern">
+            <div class="profile-topbar">
+              <button class="glass-round" data-toast="My QR code" aria-label="QR code"><span data-icon="qr"></span></button>
+              <span class="spacer"></span>
+              <button class="glass-pill" data-toast="Edit profile">Edit</button>
+            </div>
+            <img class="settings-avatar" src="img/avatar-dino-large.jpg" alt="Dinosaur">
+            <div class="settings-name">Dinosaur <span>★</span></div>
+            <div class="settings-sub">+888 888 888&nbsp;&nbsp;•&nbsp;&nbsp;@dino</div>
+          </div>
+
+          <div class="settings-group">
+            <button class="setting-row" data-action="emoji-status"><span class="setting-ic outline-blue" data-icon="smile-edit"></span><span>Set Emoji Status</span></button>
+            <button class="setting-row" data-toast="Change Profile Photo"><span class="setting-ic outline-blue" data-icon="camera-plus"></span><span>Change Profile Photo</span></button>
+          </div>
+          <div class="settings-group single">
+            <button class="setting-row" data-toast="Add Account"><span class="setting-ic outline-blue big-plus" data-icon="plus"></span><span>Add Account</span></button>
+          </div>
+          <div class="settings-group">
+            <button class="setting-row" data-open-profile="dino"><span class="setting-ic red" data-icon="person"></span><span>My Profile</span></button>
+            <button class="setting-row" data-open-profile="wallet"><span class="setting-ic blue" data-icon="wallet"></span><span>Wallet</span></button>
+          </div>
+          <div class="settings-group">
+            <button class="setting-row" data-open-chat="saved"><span class="setting-ic blue" data-icon="bookmark"></span><span>Saved Messages</span></button>
+            <button class="setting-row" data-go="calls"><span class="setting-ic green" data-icon="phone"></span><span>Recent Calls</span></button>
+            <button class="setting-row" data-toast="3 active devices"><span class="setting-ic orange" data-icon="devices"></span><span>Devices</span><span class="row-value">3</span></button>
+            <button class="setting-row" data-toast="Notifications and Sounds"><span class="setting-ic red" data-icon="bell"></span><span>Notifications and Sounds</span></button>
+          </div>
+          <div class="settings-foot">Telegram iOS UI Kit</div>
+        </div>
+      </section>
+
+      <!-- ================= SEARCH ================= -->
       <section class="screen" id="scr-search">
-        <header class="appbar">
-          <button class="iconbtn" data-back aria-label="Back"><span class="ic" data-icon="back"></span></button>
-          <input id="searchInput" class="search-input" placeholder="Search">
-        </header>
-        <nav class="tabs underline">
-          <button class="tab active">Chats</button><button class="tab">Media</button><button class="tab">Links</button><button class="tab">Files</button><button class="tab">Music</button>
-        </nav>
-        <div class="scroll">
-          <div class="list-caption" id="searchCaption">Recent</div>
-          <div id="searchResults"></div>
+        <div class="search-stories" id="searchStories"></div>
+        <div class="scroll search-scroll">
+          <div class="recent-head"><span>RECENT</span><button id="btnClearRecent">Clear</button></div>
+          <div id="recentList"></div>
+          <div id="searchResults" class="search-results"></div>
+        </div>
+        <div class="search-bottom">
+          <div class="search-filters" id="searchFilters">
+            <button class="active">Chats</button><button>Channels</button><button>Apps</button><button>Posts</button><button>Media</button>
+          </div>
+          <div class="search-bar-row">
+            <label class="search-field"><span data-icon="search"></span><input id="searchInput" type="search" placeholder="Placeholder" autocomplete="off"></label>
+            <button class="round-btn shadow" id="btnCloseSearch" aria-label="Close search"><span data-icon="x"></span></button>
+          </div>
         </div>
       </section>
 
-      <!-- ============ UI KIT COMPONENTS ============ -->
-      <section class="screen" id="scr-components">
-        <header class="appbar">
-          <button class="iconbtn" data-back aria-label="Back"><span class="ic" data-icon="back"></span></button>
-          <div class="appbar-title left">UI Kit · Components</div>
+      <!-- ================= ARCHIVED ================= -->
+      <section class="screen" id="scr-archived">
+        <header class="archived-header">
+          <button class="round-btn" data-back aria-label="Back"><span data-icon="back"></span></button>
+          <div class="archived-title"><span class="title-stack"><img src="img/avatar-strawberry.jpg" alt=""><img src="img/avatar-pepe.jpg" alt=""><img src="img/avatar-dog.jpg" alt=""></span>Archived Chats</div>
+          <button class="round-btn" data-toast="Archive settings" aria-label="More"><span data-icon="more"></span></button>
         </header>
-        <div class="scroll gray" id="componentsScroll">
-          <div class="sec kit-sec">
-            <div class="kit-title">Buttons</div>
-            <button class="btn filled" data-toast="Filled button">Filled Button</button>
-            <button class="btn filled with-ic" data-toast="Button with icon"><span class="ic" data-icon="plus"></span>Button with Icon</button>
-            <button class="btn plain" data-toast="Plain button">Plain Button</button>
-            <button class="btn plain danger" data-toast="Destructive action">Destructive Button</button>
-            <button class="btn filled" disabled>Disabled Button</button>
-          </div>
-          <div class="sec kit-sec">
-            <div class="kit-title">Text Field</div>
-            <label class="textfield"><span>First name</span><input value="Alex"></label>
-            <label class="textfield"><span>Phone number</span><input value="+1 555 010 1234" inputmode="tel"></label>
-            <label class="textfield"><span>Bio</span><input placeholder="Add a few words about yourself"></label>
-          </div>
-          <div class="sec kit-sec">
-            <div class="kit-title">List Items</div>
-            <div class="srow"><span class="srow-text">List Item with Badge</span><span class="badge">5</span></div>
-            <div class="srow"><span class="srow-text">List Item with Switch</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
-            <div class="srow"><span class="srow-text">List Item with Value</span><span class="srow-value">Default</span><span class="ic dim" data-icon="chev"></span></div>
-            <div class="srow"><span class="srow-text">Selected Item</span><span class="ic accent-ic" data-icon="check"></span></div>
-          </div>
-          <div class="sec kit-sec">
-            <div class="kit-title">Tabs</div>
-            <nav class="tabs underline in-card"><button class="tab active">Media</button><button class="tab">Files</button><button class="tab">Links</button></nav>
-            <div class="chips">
-              <span class="chip active">All</span><span class="chip">Photos</span><span class="chip">Videos</span><span class="chip">Documents</span>
-            </div>
-          </div>
-          <div class="sec kit-sec">
-            <div class="kit-title">Controls</div>
-            <div class="srow"><span class="srow-text">Switch On</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
-            <div class="srow"><span class="srow-text">Switch Off</span><label class="switch"><input type="checkbox"><span></span></label></div>
-            <div class="srow"><span class="srow-text">Checkbox</span><label class="check"><input type="checkbox" checked><span></span></label></div>
-            <div class="srow"><span class="srow-text">Radio</span><label class="radio"><input type="radio" name="r1" checked><span></span></label></div>
-            <div class="srow"><span class="srow-text">Radio</span><label class="radio"><input type="radio" name="r1"><span></span></label></div>
-          </div>
-          <div class="sec kit-sec">
-            <div class="kit-title">Badges &amp; Page Control</div>
-            <div class="badge-row"><span class="badge">1</span><span class="badge">25</span><span class="badge gray">99+</span><span class="badge red">3</span><span class="badge green">NEW</span></div>
-            <div class="pagecontrol"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-          </div>
-          <div class="sec kit-sec">
-            <div class="kit-title">Tabbar</div>
-            <div class="tabbar-demo">
-              <button class="tb-item active"><span class="ic" data-icon="user"></span>Contacts</button>
-              <button class="tb-item"><span class="ic" data-icon="phone"></span>Calls</button>
-              <button class="tb-item"><span class="ic" data-icon="chat"></span>Chats<span class="tb-badge">8</span></button>
-              <button class="tb-item"><span class="ic" data-icon="settings"></span>Settings</button>
-            </div>
-          </div>
-          <div class="mainbtn-wrap"><button class="btn main" data-toast="Main Button pressed">MAIN BUTTON</button></div>
+        <div class="scroll"><div id="archivedList"></div></div>
+      </section>
+
+      <!-- ================= CHAT ================= -->
+      <section class="screen chat-screen wall-green" id="scr-chat">
+        <header class="chat-header">
+          <button class="chat-back" data-back aria-label="Back"><span data-icon="back"></span><span class="back-count" id="backCount">8</span></button>
+          <button class="chat-title-pill" id="chatTitlePill">
+            <span class="chat-title-name" id="chatName">Cat <span class="premium-star">★</span></span>
+            <span class="chat-title-status" id="chatStatus">last seen just now</span>
+          </button>
+          <button class="chat-avatar-btn" id="chatAvatarBtn" aria-label="Open profile"><img id="chatAvatar" src="img/avatar-cat.jpg" alt=""></button>
+        </header>
+
+        <div class="scroll messages" id="messages"></div>
+        <div class="reply-preview" id="replyPreview" hidden>
+          <div class="reply-preview-text"><span id="replyPreviewTitle">Reply to Message</span><small id="replyPreviewBody"></small></div>
+          <button id="btnCancelReply" aria-label="Cancel reply"><span data-icon="x"></span></button>
         </div>
+
+        <form class="composer" id="composer" autocomplete="off">
+          <button type="button" class="composer-round bot-menu-btn" id="btnBotMenu" hidden><span data-icon="bot-menu"></span><span id="botMenuLabel">News</span></button>
+          <button type="button" class="composer-round" id="btnAttach" aria-label="Attach"><span data-icon="clip"></span></button>
+          <div class="composer-field">
+            <textarea id="msgInput" rows="1" placeholder="Message" aria-label="Message"></textarea>
+            <span class="secret-timer" id="secretTimer" hidden>1m</span>
+            <button type="button" class="field-icon" id="btnEmoji" aria-label="Emoji and stickers"><span data-icon="smile-clock"></span></button>
+          </div>
+          <button type="submit" class="composer-round send" id="btnSend" aria-label="Send"><span data-icon="mic" id="sendIcon"></span></button>
+        </form>
+
+        <div class="channel-bar" id="channelBar" hidden>
+          <div class="channel-actions">
+            <button data-toast="Comments" aria-label="Comments"><span data-icon="comment"></span></button>
+            <button data-toast="Send a gift" aria-label="Gift"><span data-icon="gift"></span></button>
+          </div>
+          <button class="channel-mute" id="btnChannelMute">Mute</button>
+          <button class="composer-round" data-toast="Search in channel" aria-label="Search"><span data-icon="search"></span></button>
+        </div>
+      </section>
+
+      <!-- ================= PROFILE ================= -->
+      <section class="screen profile-screen" id="scr-profile">
+        <div id="profileContent" class="profile-content"></div>
       </section>
     </main>
 
-    <!-- Drawer -->
-    <div id="scrim"></div>
-    <aside id="drawer">
-      <div class="drawer-head">
-        <div class="drawer-top">
-          <div class="avatar lg grad-1">A</div>
-          <button class="iconbtn on-photo" id="btnTheme" aria-label="Toggle theme"><span class="ic" data-icon="moon" id="themeIcon"></span></button>
-        </div>
-        <div class="drawer-name">Alex Morgan <span class="ic sm-ic" data-icon="chevdown"></span></div>
-        <div class="drawer-phone">+1 555 010 1234</div>
+    <!-- Floating bottom navigation from the kit -->
+    <nav id="mainNav" aria-label="Main">
+      <div class="nav-pill">
+        <button class="nav-item" data-nav="contacts"><span data-icon="contacts"></span><span>Contacts</span></button>
+        <button class="nav-item" data-nav="calls"><span data-icon="phone"></span><span>Calls</span></button>
+        <button class="nav-item active" data-nav="chats"><span data-icon="chats"></span><span>Chats</span></button>
+        <button class="nav-item" data-nav="settings"><span data-icon="gear"></span><span>Settings</span></button>
       </div>
-      <nav class="drawer-menu">
-        <button class="d-row" data-go="profile" data-profile="me"><span class="ic" data-icon="user"></span>My Profile</button>
-        <div class="d-sep"></div>
-        <button class="d-row" data-go="contacts"><span class="ic" data-icon="users"></span>New Group</button>
-        <button class="d-row" data-go="contacts"><span class="ic" data-icon="user"></span>Contacts</button>
-        <button class="d-row" data-go="calls"><span class="ic" data-icon="phone"></span>Calls</button>
-        <button class="d-row" data-openchat="saved"><span class="ic" data-icon="bookmark"></span>Saved Messages</button>
-        <button class="d-row" data-go="settings"><span class="ic" data-icon="settings"></span>Settings</button>
-        <div class="d-sep"></div>
-        <button class="d-row" data-go="contacts"><span class="ic" data-icon="plus"></span>Invite Friends</button>
-        <button class="d-row" data-go="components"><span class="ic" data-icon="grid"></span>UI Kit Components</button>
-        <button class="d-row" data-toast="Telegram Features"><span class="ic" data-icon="help"></span>Telegram Features</button>
-      </nav>
-      <div class="drawer-foot">Telegram UI Kit · Android<br><span>UI Demo — not connected to Telegram</span></div>
-    </aside>
+      <button class="nav-search" id="btnOpenSearch" aria-label="Search"><span data-icon="search"></span></button>
+    </nav>
 
-    <!-- Attach sheet -->
-    <div id="sheetScrim"></div>
-    <div id="attachSheet">
-      <div class="attach-grid">
-        <button data-toast="Open gallery"><span class="a-ic c1"><span class="ic" data-icon="image"></span></span>Gallery</button>
-        <button data-toast="Send a file"><span class="a-ic c2"><span class="ic" data-icon="file"></span></span>File</button>
-        <button data-toast="Open camera"><span class="a-ic c3"><span class="ic" data-icon="camera"></span></span>Camera</button>
-        <button data-toast="Share location"><span class="a-ic c4"><span class="ic" data-icon="pinloc"></span></span>Location</button>
-        <button data-toast="Share contact"><span class="a-ic c5"><span class="ic" data-icon="user"></span></span>Contact</button>
-        <button data-toast="Create poll"><span class="a-ic c6"><span class="ic" data-icon="poll"></span></span>Poll</button>
+    <!-- Attachment sheet -->
+    <div class="sheet-backdrop" id="attachBackdrop" hidden></div>
+    <section class="attach-sheet" id="attachSheet" hidden aria-label="Attach">
+      <div class="sheet-handle"></div>
+      <header class="attach-head">
+        <button class="round-btn light" id="btnCloseAttach" aria-label="Close"><span data-icon="x"></span></button>
+        <button class="recents-title" data-toast="Recents">Recents <span data-icon="chevron-down"></span></button>
+        <span class="head-spacer"></span>
+      </header>
+      <div class="attach-grid" id="attachGrid"></div>
+      <div class="attach-actions">
+        <button class="active"><span data-icon="gallery"></span>Gallery</button>
+        <button data-toast="Gift"><span data-icon="gift"></span>Gift</button>
+        <button data-toast="Wallet"><span data-icon="wallet"></span>Wallet</button>
+        <button data-toast="File"><span data-icon="file"></span>File</button>
+        <button data-toast="Location"><span data-icon="location"></span>Location</button>
+        <button data-toast="Poll"><span data-icon="poll"></span>Poll</button>
       </div>
+    </section>
+
+    <!-- Emoji / Stickers / GIFs panel -->
+    <section class="emoji-panel" id="emojiPanel" hidden aria-label="Emoji panel">
+      <div class="emoji-pack-row" id="emojiPackRow"></div>
+      <div class="emoji-search"><span data-icon="search"></span><input id="emojiSearch" placeholder="Search"><span class="emoji-quick">♡ 👍 👎 🎉 👋 😄 😢</span></div>
+      <div class="emoji-content" id="emojiContent"></div>
+      <div class="emoji-tabs">
+        <button class="globe-btn" data-toast="Keyboard" aria-label="Keyboard"><span data-icon="globe"></span></button>
+        <div class="segmented" id="emojiTabs"><button data-panel="gifs">GIFs</button><button data-panel="stickers">Stickers</button><button class="active" data-panel="emoji">Emoji</button></div>
+        <button class="globe-btn" id="btnEmojiDelete" aria-label="Delete"><span data-icon="backspace"></span></button>
+      </div>
+    </section>
+
+    <!-- Context menu / reactions -->
+    <div class="context-backdrop" id="contextBackdrop" hidden>
+      <div class="reaction-bar" id="reactionBar"></div>
+      <div class="context-menu" id="contextMenu"></div>
     </div>
 
-    <!-- Popup menu -->
-    <div id="popupMenu">
-      <button data-pm="profile">View Profile</button>
-      <button data-toast="Search in chat">Search</button>
-      <button data-toast="Notifications muted">Mute Notifications</button>
-      <button data-toast="History cleared">Clear History</button>
-      <button class="danger" data-toast="Chat deleted">Delete Chat</button>
-    </div>
+    <!-- Photo viewer -->
+    <section class="photo-viewer" id="photoViewer" hidden aria-label="Photo viewer">
+      <header class="viewer-head">
+        <button class="viewer-round" id="btnCloseViewer" aria-label="Back"><span data-icon="back"></span></button>
+        <div class="viewer-title"><strong id="viewerName">Dolphin</strong><span id="viewerDate">Feb 6 at 9:41</span></div>
+        <button class="viewer-round" data-toast="More" aria-label="More"><span data-icon="more"></span></button>
+      </header>
+      <img class="viewer-img" id="viewerImg" src="img/viewer-london.jpg" alt="Photo">
+      <div class="viewer-thumbs" id="viewerThumbs"></div>
+      <footer class="viewer-bar">
+        <button class="viewer-round" data-toast="Forward" aria-label="Forward"><span data-icon="forward"></span></button>
+        <div class="viewer-center"><button data-toast="Add caption" aria-label="Caption"><span data-icon="caption"></span></button><button data-toast="Show in chat" aria-label="Show in chat"><span data-icon="list"></span></button></div>
+        <button class="viewer-round" data-toast="Delete" aria-label="Delete"><span data-icon="trash"></span></button>
+      </footer>
+    </section>
 
-    <!-- Story viewer -->
-    <div id="storyViewer">
-      <div class="story-progress"><span class="fill"></span><span></span><span></span></div>
-      <div class="story-head">
-        <div class="avatar sm" id="storyAvatar">S</div>
-        <div><div class="story-name" id="storyName">Story</div><div class="story-time">2 hours ago</div></div>
-        <span class="spacer"></span>
-        <button class="iconbtn on-photo" id="btnStoryClose" aria-label="Close"><span class="ic" data-icon="close"></span></button>
-      </div>
-      <div class="story-foot">
-        <div class="story-reply">Reply to story…</div>
-        <span class="story-heart">♥</span>
-      </div>
-    </div>
-
-    <div id="toast"></div>
+    <div class="toast" id="toast" role="status"></div>
   </div>
 </div>
 <script src="app.js"></script>

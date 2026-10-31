@@ -1,386 +1,412 @@
-/* Telegram Android UI Kit — UI demo logic */
-(function(){
 "use strict";
-if(location.search.indexOf("androidapp")>-1) document.body.classList.add("inapp");
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+if(new URLSearchParams(location.search).has("androidapp")) document.body.classList.add("android");
 
-/* ---------- Icons (outline, Telegram/Material style) ---------- */
-var P={
-menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
-search:'<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.2-4.2"/>',
-back:'<path d="M19.5 12h-14M11 6l-6 6 6 6"/>',
-more:'<g fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.75"/><circle cx="12" cy="12" r="1.75"/><circle cx="12" cy="19" r="1.75"/></g>',
-phone:'<path d="M21.5 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.6 4.2 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L7.6 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7a2 2 0 0 1 1.7 2.05z"/>',
-clip:'<path d="m21.3 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.86 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
-mic:'<rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.8 21h6.4"/>',
-send:'<path d="M21.5 2.5 11 13"/><path d="M21.5 2.5 14.8 21.5 11 13 2.5 9.2z"/>',
-smile:'<circle cx="12" cy="12" r="9"/><path d="M8.3 14.2s1.3 1.9 3.7 1.9 3.7-1.9 3.7-1.9"/><g fill="currentColor" stroke="none"><circle cx="9" cy="9.6" r="1.2"/><circle cx="15" cy="9.6" r="1.2"/></g>',
-edit:'<path d="M17 3.5a2.6 2.6 0 1 1 3.7 3.7L8 19.9 3 21l1.1-5z"/>',
-lock:'<rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
-bookmark:'<path d="M6.5 3.5h11V21L12 16.8 6.5 21z"/>',
-users:'<circle cx="9" cy="8.5" r="3.4"/><path d="M3 19.8c.7-3.2 3.1-4.9 6-4.9s5.3 1.7 6 4.9"/><path d="M15.8 5.5a3.4 3.4 0 0 1 0 6.2M17.9 15.2c1.7.8 2.7 2.3 3.1 4.6"/>',
-user:'<circle cx="12" cy="8" r="4"/><path d="M4.6 20.2c.9-3.7 3.8-5.5 7.4-5.5s6.5 1.8 7.4 5.5"/>',
-mega:'<path d="M4 10.5v3c0 .4.3.8.7.9L7 15V9L4.7 9.6A.9.9 0 0 0 4 10.5z"/><path d="M7 9.8 19 5v13.5L7 13.8"/><path d="M9 14.8v3a2.2 2.2 0 0 0 4.4 0v-1.9"/>',
-bell:'<path d="M6 10a6 6 0 0 1 12 0c0 4 1.6 5.2 1.6 5.2H4.4S6 14 6 10z"/><path d="M10.2 18.8a2 2 0 0 0 3.6 0"/>',
-belloff:'<path d="M6 10a6 6 0 0 1 12 0c0 4 1.6 5.2 1.6 5.2H4.4S6 14 6 10z"/><path d="M10.2 18.8a2 2 0 0 0 3.6 0"/><path d="M4 3.5 20 20"/>',
-video:'<rect x="2.5" y="6.5" width="13" height="11" rx="2.5"/><path d="m15.5 10.8 6-3.6v9.6l-6-3.6"/>',
-image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9.5" r="1.7"/><path d="m4.5 18 5-5 2.8 2.8L16 12l3.5 4.2"/>',
-file:'<path d="M6 2.8h7.5L19 8.3V21a.8.8 0 0 1-.8.8H6A.8.8 0 0 1 5.2 21V3.6A.8.8 0 0 1 6 2.8z"/><path d="M13.3 3v5.5H19"/>',
-camera:'<path d="M4 7.5h2.6L8.7 4h6.6l2.1 3.5H20a1.6 1.6 0 0 1 1.6 1.6v8.8a1.6 1.6 0 0 1-1.6 1.6H4a1.6 1.6 0 0 1-1.6-1.6V9.1A1.6 1.6 0 0 1 4 7.5z"/><circle cx="12" cy="13.2" r="3.5"/>',
-pinloc:'<path d="M12 21.3S5.2 15.7 5.2 9.9a6.8 6.8 0 0 1 13.6 0c0 5.8-6.8 11.4-6.8 11.4z"/><circle cx="12" cy="9.9" r="2.5"/>',
-poll:'<path d="M5.5 20v-9.5M12 20V4.5M18.5 20v-6.5"/>',
-plus:'<path d="M12 5v14M5 12h14"/>',
-close:'<path d="M6 6l12 12M18 6 6 18"/>',
-chev:'<path d="m9.5 5 7 7-7 7"/>',
-chevdown:'<path d="m5 9.5 7 7 7-7"/>',
-check:'<path d="m4.5 12.6 5 5L19.5 6.8"/>',
-moon:'<path d="M20.4 13.4A8.7 8.7 0 1 1 10.6 3.6a7 7 0 0 0 9.8 9.8z"/>',
-sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2 19 19M19 5l-1.8 1.8M6.8 17.2 5 19"/>',
-settings:'<circle cx="12" cy="12" r="3.1"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09c0 .68.4 1.3 1 1.51.6.22 1.28.1 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82c.21.6.83 1 1.51 1.08H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
-help:'<circle cx="12" cy="12" r="9"/><path d="M9.3 9.2A2.8 2.8 0 1 1 12 13.8v.7"/><g fill="currentColor" stroke="none"><circle cx="12" cy="17.4" r="1.25"/></g>',
-grid:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
-chat:'<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/>',
-block:'<circle cx="12" cy="12" r="8.8"/><path d="M6 6l12 12"/>',
-monitor:'<rect x="3" y="4" width="18" height="12.5" rx="2"/><path d="M9.5 20.3h5M12 16.5v3.8"/>',
-folder:'<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H10l2 2.5h7.5A1.5 1.5 0 0 1 21 9v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18z"/>',
-data:'<ellipse cx="12" cy="5.5" rx="7.8" ry="2.9"/><path d="M4.2 5.5v13c0 1.6 3.5 2.9 7.8 2.9s7.8-1.3 7.8-2.9v-13M4.2 12c0 1.6 3.5 2.9 7.8 2.9s7.8-1.3 7.8-2.9"/>',
-palette:'<path d="M12 3.2a8.8 8.8 0 1 0 0 17.6c1.1 0 1.8-.9 1.8-1.8 0-.8-.6-1.3-.6-2.1 0-.9.8-1.6 1.9-1.6h1.8a4 4 0 0 0 4-4c0-4.5-4-8.1-8.9-8.1z"/><g fill="currentColor" stroke="none"><circle cx="7.6" cy="10.2" r="1.2"/><circle cx="11" cy="7.4" r="1.2"/><circle cx="15" cy="8.6" r="1.2"/><circle cx="8.2" cy="14.4" r="1.2"/></g>',
-globe:'<circle cx="12" cy="12" r="9"/><path d="M3.2 12h17.6M12 3.2c2.6 2.5 3.9 5.4 3.9 8.8s-1.3 6.3-3.9 8.8c-2.6-2.5-3.9-5.4-3.9-8.8S9.4 5.7 12 3.2z"/>',
-star:'<path d="m12 3.4 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.6l5.9-.9z"/>',
-play:'<g fill="currentColor" stroke="none"><path d="M8.5 5.5v13l11-6.5z"/></g>',
-download:'<path d="M12 3.5v11m0 0 4-4m-4 4-4-4"/><path d="M4 17.5V19a1.8 1.8 0 0 0 1.8 1.8h12.4A1.8 1.8 0 0 0 20 19v-1.5"/>',
-archive:'<rect x="3" y="4" width="18" height="4.5" rx="1"/><path d="M4.8 8.5V19a1.5 1.5 0 0 0 1.5 1.5h11.4a1.5 1.5 0 0 0 1.5-1.5V8.5M10 12.5h4"/>',
-mute:'<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path d="m16.2 9.6 4.8 4.8m0-4.8-4.8 4.8"/>',
-pin:'<path d="M14.5 4 20 9.5l-2.6.7-2 4.3-2.2 1.2-1.2-4.9-4.4-1.9 1-2.3 4.4-1.9z"/><path d="M9.8 14.2 4 20"/>',
-arrowIn:'<path d="M6 5.5v7h7M6 12.5 17 2.8" transform="translate(1.5,3)"/>',
-arrowOut:'<path d="M7 17.5 17.5 7m0 0H10m7.5 0v7.5"/>',
-plane:'<g fill="currentColor" stroke="none"><path d="M21.9 3.1 2.7 10.6c-.9.35-.86 1.6.05 1.9l4.7 1.55 1.8 5.6c.23.72 1.14.92 1.66.37l2.4-2.55 4.62 3.4c.7.52 1.72.13 1.86-.7l2.6-15.5c.17-1-.77-1.83-1.5-1.57zM8.6 13.2l9.5-6c.2-.13.4.17.22.32l-7.9 7.2-.3 3z"/></g>'
+const ICONS={
+search:'<circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20.2 20.2-4.1-4.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+scan:'<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+compose:'<path d="M12 20h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16.7 3.9a2.4 2.4 0 0 1 3.4 3.4L8 19.4l-4.2 1.1L4.9 16.3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+archive:'<path d="M4 4h16v5H4zM6 9h12v10H6z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 13h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+"person-plus":'<circle cx="10" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 2 0 3.8.8 5 2.3M18 8v6M15 11h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+plus:'<path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+phone:'<path fill="currentColor" d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/>',
+"phone-plus":'<path fill="currentColor" d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/>',
+qr:'<path fill="currentColor" d="M4 4h6v6H4zm2 2v2h2V6zm8-2h6v6h-6zm2 2v2h2V6zM4 14h6v6H4zm2 2v2h2v-2zm9-2h2v2h-2zm3 3h2v3h-5v-2h3zm-3 1h2v2h-2z"/>',
+"smile-edit":'<circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="7.5" cy="9" r="1" fill="currentColor"/><circle cx="12.5" cy="9" r="1" fill="currentColor"/><path d="M7 13c1.8 1.5 4.2 1.5 6 0M15.5 15.5 20 20M18.8 13.8l2.2 2.2-2 2-2.2-2.2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+"camera-plus":'<path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M18.5 17v5M16 19.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+person:'<circle cx="12" cy="8" r="4" fill="currentColor"/><path fill="currentColor" d="M4 21c.7-4.2 3.9-6.5 8-6.5s7.3 2.3 8 6.5z"/>',
+wallet:'<path fill="currentColor" d="M3 7a3 3 0 0 1 3-3h11a1 1 0 0 1 0 2H7v12h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2H6a3 3 0 0 1-3-3zm13 6.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6z"/>',
+bookmark:'<path fill="currentColor" d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.2L5 21V4a1 1 0 0 1 1-1z"/>',
+devices:'<rect x="3" y="5" width="13" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="17" y="9" width="4" height="10" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 19h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+bell:'<path fill="currentColor" d="M18 16H6c.8-1.2 1.5-2.6 1.5-4.5V10a4.5 4.5 0 0 1 9 0v1.5c0 1.9.7 3.3 1.5 4.5zM9.5 18a2.6 2.6 0 0 0 5 0zM11 4.2V3h2v1.2a5.8 5.8 0 0 1 2.4 1.3l-1.2 1.4A3.8 3.8 0 0 0 12 5.7c-.8 0-1.6.3-2.2.8L8.6 5.5A5.8 5.8 0 0 1 11 4.2z"/>',
+moon:'<path fill="currentColor" d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.8 8.8 0 1 0 20 14.5z"/>',
+x:'<path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+"chevron-down":'<path d="m5 9 7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+back:'<path d="m14.5 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+more:'<circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/>',
+"bot-menu":'<rect x="4" y="5" width="16" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+clip:'<path d="m19.5 12.5-8.6 8.1a5 5 0 0 1-7-6.6l8.9-8.4a3.3 3.3 0 1 1 4.6 4.5l-8.6 8a1.7 1.7 0 1 1-2.4-2.3l7.8-7.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+"smile-clock":'<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M8.2 17.2c1 1 2.3 1.5 3.8 1.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+mic:'<rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+send:'<path fill="currentColor" d="M21.9 2.3 2.7 10.6c-.9.4-.9 1.7.1 2l6.8 2.2 2.2 6.8c.3 1 1.6 1.1 2 .1l8.2-19.2c.2-.8-.3-1.4-1.1-1.2zM11 13.2l8.4-8.3-6.5 13.2-1.9-4.9z"/>',
+comment:'<path fill="currentColor" d="M4 4h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V5a1 1 0 0 1 1-1zM7 8h10M7 11h6" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>',
+gift:'<path fill="currentColor" d="M4 10h16v10H4zM3 6h18v4H3zm9 4v10h-2V10zm2 0v10h-2zM12 6C9 6 7.5 4.8 7.5 3.4 7.5 2.2 8.5 1.5 9.6 1.8 11 2.1 12 3.8 12 6zm0 0c3 0 4.5-1.2 4.5-2.6 0-1.2-1-1.9-2.1-1.6C13 2.1 12 3.8 12 6z"/>',
+gallery:'<rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.7" fill="currentColor"/><path d="m5 17 5-5 3 3 2.5-2.5L19 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+file:'<path fill="currentColor" d="M6 2h8l5 5v15H6zM14 2v6h6z"/>',
+location:'<path fill="currentColor" d="M12 22s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12zm0-9.5A2.6 2.6 0 1 1 12 7a2.6 2.6 0 0 1 0 5.2z"/>',
+poll:'<path fill="currentColor" d="M5 20V10h3v10zm5.5 0V4h3v16zM16 20v-7h3v7z"/>',
+globe:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3c2.7 2.6 4 5.7 4 9s-1.3 6.4-4 9c-2.7-2.6-4-5.7-4-9s1.3-6.4 4-9zM5.5 6.5c2 1.3 4.2 2 6.5 2s4.5-.7 6.5-2M5.5 17.5c2-1.3 4.2-2 6.5-2s4.5.7 6.5 2" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+backspace:'<path d="M9 5h11v14H9l-6-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m12 9.5 5 5m0-5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+forward:'<path fill="currentColor" d="M13 5V2l8 6-8 6v-3C7 11 4.5 13 3 16c.2-5.4 3.4-10 10-11z"/>',
+caption:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 16 12 8l3.5 8M9.8 13.5h4.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="4" cy="6" r="1.3" fill="currentColor"/><circle cx="4" cy="12" r="1.3" fill="currentColor"/><circle cx="4" cy="18" r="1.3" fill="currentColor"/>',
+trash:'<path fill="currentColor" d="M4 7h16l-1 14H5zM9 7V4h6v3h5v2H4V7h5zM9.5 11v7M14.5 11v7" stroke="#000" stroke-width=".6"/>',
+contacts:'<circle cx="12" cy="12" r="9.2" fill="currentColor"/><circle cx="12" cy="9.3" r="3.4" fill="#fff"/><path fill="#fff" d="M5.8 19.1c1-3.3 3.3-5 6.2-5s5.2 1.7 6.2 5c-1.8 1.4-3.9 2.1-6.2 2.1s-4.4-.7-6.2-2.1z"/>',
+chats:'<path fill="currentColor" d="M9.2 4A5.6 5.6 0 0 0 5 12.6L4 16l3.6-1A5.6 5.6 0 1 0 9.2 4z"/><path fill="currentColor" opacity=".72" d="M15.5 3.5a6.8 6.8 0 0 1 4 12.6l1 3.4-3.8-1a6.8 6.8 0 0 1-6.3-2.2 7.1 7.1 0 0 0 2.2.3 7 7 0 0 0 2.9-13.1z"/>',
+gear:'<g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/></g>',
+mute:'<path fill="currentColor" d="M4 10v4h3l5 4V6l-5 4z"/><path d="m16 9 5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+pin:'<path fill="currentColor" d="M15.5 3.5 20.5 8.5l-2.3.7 1 4.5-1.8 1.8-3.2-3.2-4.4 4.3-.4 3-1.7.4.4-3.9 4.4-4.4-3.1-3.1 1.8-1.8 4.5 1 .8-2.3z"/>',
+play:'<path fill="currentColor" d="M8 5v14l11-7z"/>',
+lock:'<rect x="5" y="10" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/>',
+video:'<rect x="3" y="7" width="12" height="10" rx="2" fill="currentColor"/><path fill="currentColor" d="m16 10.5 5-3v9l-5-3z"/>',
+check:'<path d="m4.5 12.5 5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
+copy:'<rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="4" y="4" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>',
+reply:'<path fill="currentColor" d="M11 5V2L3 8l8 6v-3c6 0 8.5 2 10 5-.2-5.4-3.4-10-10-11z"/>',
+edit:'<path d="M12 20h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16.7 3.9a2.4 2.4 0 0 1 3.4 3.4L8 19.4l-4.2 1.1L4.9 16.3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+star:'<path fill="currentColor" d="m12 2.5 3 6.2 6.8 1-4.9 4.8 1.1 6.8-6-3.2-6 3.2 1.1-6.8L2.2 9.7l6.8-1z"/>',
+instagram:'<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/>',
+music:'<path fill="currentColor" d="M9 18.5V6l10-2v11.5a3.5 3.5 0 1 1-2-3.2V7L11 8.5v10a3.5 3.5 0 1 1-2-3.2z"/>',
+clock:'<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
 };
-function svg(name,cls){return '<svg class="'+(cls||"")+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[name]||"")+'</svg>';}
-document.querySelectorAll("[data-icon]").forEach(function(el){ el.innerHTML=svg(el.getAttribute("data-icon")); });
+const icon=name=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]||""}</svg>`;
+function fillIcons(root=document){$$("[data-icon]",root).forEach(el=>{if(!el.dataset.filled){el.innerHTML=icon(el.dataset.icon);el.dataset.filled="1";}});}
 
-function tickSVG(n){
-  var attrs='fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
-  var paths = (n===1)
-    ? '<path d="m3.2 7.4 3.3 3.1L13.2 3.8" '+attrs+'/>'
-    : '<path d="m1.2 7.4 3.3 3.1L11.3 3.8" '+attrs+'/><path d="m7.9 7.1 3.3 3.4L18 3.8" '+attrs+'/>';
-  return '<svg viewBox="0 0 20 13" aria-hidden="true">'+paths+'</svg>';
-}
-function verifiedSVG(){
-  return '<svg class="verified" viewBox="0 0 24 24" aria-hidden="true"><polygon fill="currentColor" points="12,1.2 14.1,3.6 17.1,3 18.2,5.9 21.2,6.9 20.6,10 22.8,12 20.6,14 21.2,17.1 18.2,18.1 17.1,21 14.1,20.4 12,22.8 9.9,20.4 6.9,21 5.8,18.1 2.8,17.1 3.4,14 1.2,12 3.4,10 2.8,6.9 5.8,5.9 6.9,3 9.9,3.6"/><path d="m8.4 12.3 2.5 2.5 4.7-5.1" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-}
-
-/* ---------- Data ---------- */
-var chats=[
-{id:"saved",name:"Saved Messages",type:"personal",special:"bookmark",preview:"UI Kit — design tokens and components",time:"12:40",pinned:true,status:"",username:"",grad:"grad-saved"},
-{id:"telegram",name:"Telegram",type:"channel",special:"plane",verified:true,preview:"New update: stories, custom wallpapers and more inside.",time:"11:24",unread:3,status:"16.4M subscribers",username:"@telegram",grad:"grad-tg"},
-{id:"maria-design",name:"Maria Garcia",type:"personal",online:true,preview:"The new Android UI kit looks perfect!",time:"10:58",unread:2,status:"online",username:"@Maria Garcia",phone:"+34 612 34 56 78",grad:"grad-6",initials:"MG"},
-{id:"designers",name:"Designers Chat",type:"group",preview:"shared the latest mockups in Figma",sender:"Sarah Lee",time:"10:31",unread:12,status:"248 members, 37 online",username:"@designerschat",grad:"grad-2",initials:"DC"},
-{id:"james-smith",name:"James Smith",type:"personal",preview:"Let's ship the build on Friday",mine:true,ticks:2,time:"09:17",status:"last seen recently",username:"@james smith",phone:"+1 415 555 0132",grad:"grad-5",initials:"JW"},
-{id:"botfather",name:"BotFather",type:"bot",verified:true,preview:"Success! The bot is ready. Use /help",time:"08:46",status:"bot",username:"@BotFather",grad:"grad-4",initials:"BF"},
-{id:"Anna Kim",name:"Anna Kim",type:"personal",muted:true,preview:"Voice message (0:42)",time:"Yesterday",unread:5,status:"last seen 1 hour ago",username:"@Anna Kim",phone:"+82 10 5550 1234",grad:"grad-0",initials:"AS"},
-{id:"mobilekit",name:"Mobile Chat UI Kits",type:"group",preview:"We just reached 2,500 members! WOO!",sender:"Emma Davis",time:"Yesterday",status:"2,500 members",username:"@mobilechatkits",grad:"grad-3",initials:"MC"},
-{id:"durov",name:"Durov's Channel",type:"channel",verified:true,preview:"Every month, hundreds of new features…",time:"Tue",status:"9.8M subscribers",username:"@durov",grad:"grad-1",initials:"DC"},
-{id:"lucas-miller",name:"Lucas Miller",type:"personal",preview:"Photo",mine:true,ticks:1,time:"Tue",status:"last seen yesterday",username:"@lucas-miller",phone:"+49 171 555 0192",grad:"grad-4",initials:"LM"},
-{id:"ton",name:"Ton Community",type:"channel",preview:"Mini Apps are taking off on Telegram",time:"Mon",unread:1,status:"1.2M subscribers",username:"@toncoin",grad:"grad-5",initials:"TC"},
-{id:"emma-davis",name:"Emma Davis",type:"personal",online:true,preview:"Table for four, 2 PM. Be there.",time:"Mon",status:"online",username:"@emma-davis",phone:"+44 7700 900123",grad:"grad-3",initials:"VB"}
+const AV={dino:"img/avatar-dino.jpg",cat:"img/avatar-cat.jpg",dog:"img/avatar-dog.jpg",pepe:"img/avatar-pepe.jpg",dolphin:"img/avatar-dolphin.jpg",penguin:"img/avatar-penguin.jpg",leo:"img/avatar-leo.jpg",news:"img/avatar-news.jpg",nomads:"img/avatar-nomads.jpg",strawberry:"img/avatar-strawberry.jpg",pavel:"img/avatar-pavel.jpg",catLarge:"img/avatar-cat-large.jpg",dinoLarge:"img/avatar-dino-large.jpg"};
+let chats=[
+{id:"saved",name:"Saved Messages",avatar:"saved",preview:"IMG_420.png",file:true,time:"Fri",category:"work",status:"Saved Messages",wall:"wall-green"},
+{id:"cat",name:"Cat",premium:true,avatar:AV.cat,preview:"Pepe says hi.",time:"9:41",ticks:true,online:true,ring:"ring",category:"work",status:"last seen just now",wall:"wall-green",backCount:8},
+{id:"pepe",name:"Pepe",statusEmoji:"🫐",avatar:AV.pepe,preview:"Say hello to Cat.",time:"9:40",unread:1,ring:"ring",category:"work",status:"online",wall:"wall-green"},
+{id:"team16",name:"16Bit Team",muted:true,avatar:AV.strawberry,preview:"16Bit Team started a Live Stream",time:"9:41",unread:1,unreadGrey:true,live:true,category:"groups",status:"live stream",wall:"wall-green"},
+{id:"nomads",name:"Digital Nomads",muted:true,avatar:AV.nomads,sender:"Pepe",preview:"We just reached 2,500 members! WOO!",time:"9:22",category:"groups",status:"2,503 members, 736 online",wall:"wall-green",backCount:8,type:"group"},
+{id:"dog",name:"Dog",statusEmoji:"🍇",avatar:AV.dog,preview:"Table for four, 2 PM be there",time:"9:12",ring:"ring-blue",category:"work",status:"online",statusOnline:true,wall:"wall-orange"},
+{id:"penguin",name:"Penguin",avatar:AV.penguin,preview:"Check these out!",time:"8:28",unread:1,category:"work",status:"online",statusOnline:true,wall:"wall-green"},
+{id:"wallet",name:"Wallet",verified:true,avatar:"wallet",preview:"Welcome to Crypto Wallet!",time:"8:12",ticks:true,unread:1,open:true,category:"bots",status:"bot",wall:"wall-green",type:"bot"},
+{id:"pavel",name:"Pavel Durov",verified:true,statusEmoji:"📚",avatar:AV.pavel,preview:"Telegram has fully repaid the bonds we issued 5 years ago.",time:"9:41",category:"channels",status:"10,288,126 subscribers",wall:"wall-green",backCount:8,type:"channel"},
+{id:"dolphin",name:"Dolphin",secret:true,avatar:AV.dolphin,preview:"I needed proof this was your idea! 😭🤨",time:"9:41",category:"work",status:"last seen just now",wall:"wall-photo",type:"secret"},
+{id:"catch",name:"Catch News",avatar:AV.news,preview:"Welcome to Catch News! 📣",time:"9:41",category:"bots",status:"bot",wall:"wall-blue",type:"bot"},
+{id:"news",name:"News",avatar:AV.news,preview:"Top trends and global news",time:"8:00",category:"channels",status:"channel",wall:"wall-blue",type:"channel"},
+{id:"leo",name:"Leo",avatar:AV.leo,preview:"Hi",time:"7:58",category:"work",status:"last seen recently",wall:"wall-green"}
 ];
-var messages={
-saved:[{date:"Today"},{from:"out",text:"Telegram Android UI Ilya Grishin — components checklist",time:"12:38"},{from:"out",text:"Buttons · List Items · Tabs · Tabbar · Text Field · Main Button",time:"12:39"},{from:"out",kind:"file",file:"design-tokens.json",size:"4.2 KB",time:"12:40"}],
-telegram:[{date:"Today"},{from:"in",text:"New update is here: stories, custom wallpapers for chats, and many other improvements.",time:"11:20"},{from:"in",kind:"photo",text:"Set a different wallpaper for every chat — or create your own with colors and patterns.",time:"11:22"},{from:"in",text:"Read more on our blog and update the app to try all the new features.",time:"11:24"}],
-"maria-design":[{date:"Today"},{from:"in",text:"Hi! Did you see the updated Android UI kit?",time:"10:52"},{from:"out",text:"Yes! I built the whole interface from its components — buttons, list items, tabs…",time:"10:55",ticks:2},{from:"in",text:"That was fast. The colors match the original Telegram perfectly.",time:"10:57"},{from:"in",text:"The new Android UI kit looks perfect!",time:"10:58"}],
-designers:[{date:"Today"},{from:"in",name:"Sarah Lee",color:"#8a4fd3",text:"Morning everyone! I shared the latest mockups in Figma",time:"10:12"},{from:"in",name:"Tom",color:"#dd6a2d",kind:"photo",text:"New chat screen variants",time:"10:15"},{from:"out",text:"Looks great — the bubbles and list items are spot on.",time:"10:20",ticks:2,reply:{who:"Tom",text:"New chat screen variants"}},{from:"in",name:"Maria Garcia",color:"#dd3d7d",kind:"voice",dur:"0:24",time:"10:31"},{from:"in",name:"Sarah Lee",color:"#8a4fd3",kind:"file",file:"Telegram Android UI Kit.fig",size:"70.7 MB",time:"10:31"}],
-"james-smith":[{date:"Today"},{from:"in",text:"The APK builds fine on my side.",time:"09:10"},{from:"out",text:"Great — zero changes to the UI, just compiled it.",time:"09:15",ticks:2},{from:"out",text:"Let's ship the build on Friday",time:"09:17",ticks:2}],
-botfather:[{date:"Today"},{from:"out",text:"/newbot",time:"08:44",ticks:2},{from:"in",text:"Alright, a new bot. How are we going to call it?",time:"08:44"},{from:"out",text:"UI Kit Bot",time:"08:45",ticks:2},{from:"in",text:"Success! The bot is ready. Use /help to see all commands.",time:"08:46"}]
-};
-function defaultMessages(c){
-  return [{date:"Today"},{from:"in",text:"Hello! This is a UI demo of the Telegram Android kit.",time:"09:00"},{from:"out",text:"Hi! Everything here is built from the kit's components.",time:"09:02",ticks:2},{from:"in",text:c.preview||"Nice to see you here.",time:c.time||"09:05"}];
-}
-var contacts=[
-{name:"Maria Garcia",seen:"online",on:true,grad:"grad-6",initials:"MG",chat:"maria-design"},
-{name:"Emma Davis",seen:"online",on:true,grad:"grad-3",initials:"VB",chat:"emma-davis"},
-{name:"James Smith",seen:"last seen recently",grad:"grad-5",initials:"JW",chat:"james-smith"},
-{name:"Anna Kim",seen:"last seen 1 hour ago",grad:"grad-0",initials:"AS",chat:"Anna Kim"},
-{name:"Lucas Miller",seen:"last seen yesterday",grad:"grad-4",initials:"LM",chat:"lucas-miller"},
-{name:"Sarah Lee",seen:"last seen 2 hours ago",grad:"grad-2",initials:"SK"},
-{name:"Noah Wilson",seen:"last seen recently",grad:"grad-1",initials:"NP"},
-{name:"Min-Jun Park",seen:"last seen 3 days ago",grad:"grad-4",initials:"YJ"},
-{name:"Olivia Chen",seen:"last seen last week",grad:"grad-6",initials:"DC"}
+const archivedIds=["pepe","team16","nomads","dog","penguin","wallet"];
+const stories=[
+{name:"My Story",avatar:AV.dino,plus:true},{name:"16Bit Team",avatar:AV.strawberry,live:true,ring:"ring"},{name:"Dog",avatar:AV.dog,ring:"ring-blue"},{name:"Pepe",avatar:AV.pepe,ring:"ring"},{name:"Cat",avatar:AV.cat,ring:"ring"},{name:"Dolphin",avatar:AV.dolphin,ring:"ring"}
 ];
-var calls=[
-{name:"Maria Garcia",dir:"in",meta:"Today at 10:32 · 12 min",grad:"grad-6",initials:"MG"},
-{name:"James Smith",dir:"out",meta:"Yesterday at 18:04 · 3 min",grad:"grad-5",initials:"JW"},
-{name:"Anna Kim",dir:"missed",meta:"Yesterday at 09:15 · Missed",grad:"grad-0",initials:"AS"},
-{name:"Emma Davis",dir:"in",meta:"Monday at 21:47 · 26 min",grad:"grad-3",initials:"VB"},
-{name:"Lucas Miller",dir:"out",meta:"Sunday at 14:20 · Canceled",grad:"grad-4",initials:"LM"}
+const searchStoriesData=[
+{name:"Dog",avatar:AV.dog,ring:"ring-blue"},{name:"Digital Noma…",avatar:AV.nomads},{name:"Pepe",avatar:AV.pepe,ring:"ring"},{name:"News",avatar:AV.news},{name:"Leo",avatar:AV.leo}
 ];
-var stories=[{name:"My Story",grad:"grad-1",initials:"A",mine:true}];
-contacts.slice(0,6).forEach(function(c){stories.push({name:c.name.split(" ")[0],grad:c.grad,initials:c.initials,seen:Math.random()<.35});});
+const contacts=[
+{name:"Penguin",avatar:AV.penguin,status:"online",online:true,statusEmoji:"🐸",chat:"penguin"},
+{name:"Dolphin",avatar:AV.dolphin,status:"online",online:true,statusEmoji:"🌙",chat:"dolphin"},
+{name:"Dog",avatar:AV.dog,status:"last seen 3 minutes ago",chat:"dog"},
+{name:"Cat",avatar:AV.cat,status:"last seen 4 minutes ago",chat:"cat"},
+{name:"Elephant",initial:"E",color:"linear-gradient(145deg,#5aa9ff,#2878e8)",status:"last seen 15 minutes ago",profile:"elephant"},
+{name:"Pepe",avatar:AV.pepe,status:"last seen recently",chat:"pepe"},
+{name:"Giraffe",initial:"G",color:"linear-gradient(145deg,#ff9de2,#e85bb5)",status:"last seen recently",profile:"giraffe"}
+];
+const calls=[
+{name:"Dog",avatar:AV.dog,time:"9:41",kind:"in",label:"Incoming Call (1 minute)",chat:"dog"},
+{name:"Cat",avatar:AV.cat,time:"9:38",kind:"out",label:"Outgoing Call",chat:"cat"},
+{name:"Pepe",avatar:AV.pepe,time:"9:20",kind:"missed",label:"Missed Call",chat:"pepe"}
+];
 
-/* ---------- Helpers ---------- */
-function $(id){return document.getElementById(id);}
-var toastTimer=null;
-function toast(msg){var t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},2100);}
-function initialsOf(name){return name.split(" ").map(function(w){return w[0];}).slice(0,2).join("").toUpperCase();}
-function nowStr(){var d=new Date(),h=d.getHours(),m=("0"+d.getMinutes()).slice(-2);return h+":"+m;}
-function avatarHTML(c,size){
-  var inner;
-  if(c.special==="bookmark") inner=svg("bookmark");
-  else if(c.special==="plane") inner=svg("plane");
-  else inner=(c.initials||initialsOf(c.name));
-  var dot=c.online?'<span class="online-dot"></span>':"";
-  return '<div class="avatar '+(size||"")+' '+(c.grad||"grad-5")+'">'+inner+dot+'</div>';
+let currentScreen="chats",navStack=["chats"],currentChatId="cat",currentProfileId="cat";
+let chatEditMode=false,suppressClick=false,replyText="",contextTarget=null,attachSelection=[];
+const screenId=id=>({chats:"scr-chats",contacts:"scr-contacts",calls:"scr-calls",settings:"scr-settings",search:"scr-search",archived:"scr-archived",chat:"scr-chat",profile:"scr-profile"}[id]);
+function showScreen(id,push=true){
+  if(push&&navStack[navStack.length-1]!==id)navStack.push(id);
+  currentScreen=id;
+  $$(".screen").forEach(s=>s.classList.toggle("active",s.id===screenId(id)));
+  const withNav=["chats","contacts","calls","settings"].includes(id);
+  $("#mainNav").classList.toggle("hidden",!withNav||(id==="chats"&&chatEditMode));
+  $$(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.nav===id));
+  if(id!=="chat"){closePanels();}
 }
-
-/* ---------- Router ---------- */
-var stack=["chats"], currentChat=null;
-function go(id){
-  if(stack[stack.length-1]===id) return;
-  stack.push(id); show(id);
+function goMain(id){navStack=[id];showScreen(id,false);}
+function goBack(){navStack.pop();const prev=navStack[navStack.length-1]||"chats";showScreen(prev,false);}
+function toast(text){const t=$("#toast");t.textContent=text;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1900);}
+function avatarHTML(c,size=58){
+  if(c.avatar==="saved")return `<span class="saved-avatar" style="width:${size}px;height:${size}px">${icon("bookmark")}</span>`;
+  if(c.avatar==="wallet")return `<span class="wallet-avatar" style="width:${size}px;height:${size}px">${icon("wallet")}</span>`;
+  if(c.initial)return `<span class="initial-avatar" style="width:${size}px;height:${size}px;background:${c.color||""};font-size:${Math.round(size*.38)}px">${c.initial}</span>`;
+  const cls=c.ring?`avatar-wrap ${c.ring}`:"avatar-wrap";
+  const imgSize=c.ring?size-9:size;
+  return `<span class="${cls}"><img src="${c.avatar}" alt="" style="width:${imgSize}px;height:${imgSize}px">${c.online?'<i class="online"></i>':""}${c.live?'<i class="live-badge">LIVE</i>':""}</span>`;
 }
-function back(){
-  if(stack.length<=1) return false;
-  stack.pop(); show(stack[stack.length-1]); return true;
-}
-function show(id){
-  document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active");});
-  $("scr-"+id).classList.add("active");
-  if(id==="search") setTimeout(function(){$("searchInput").focus();},260);
-  if(id==="chats") renderChats(currentFilter);
-}
-
-/* ---------- Overlays ---------- */
-function openDrawer(){ $("drawer").classList.add("open"); $("scrim").classList.add("open"); }
-function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); }
-function closeSheet(){ $("attachSheet").classList.remove("open"); $("sheetScrim").classList.remove("open"); }
-function closeAllOverlays(){
-  var any=false;
-  [["drawer"],["attachSheet"],["popupMenu"],["storyViewer"]].forEach(function(x){
-    var el=$(x[0]); if(el.classList.contains("open")){el.classList.remove("open");any=true;}
-  });
-  if($("scrim").classList.contains("open")||$("sheetScrim").classList.contains("open")){any=true;}
-  $("scrim").classList.remove("open"); $("sheetScrim").classList.remove("open");
-  return any;
-}
-window.onAndroidBack=function(){ if(closeAllOverlays()) return true; return back(); };
-
-/* ---------- Chat list ---------- */
-var currentFilter="all";
+function nameHTML(c){return `${c.secret?'<span style="color:#35a852">🔒 </span>':""}${c.name}${c.premium?'<span class="premium-star">★</span>':""}${c.statusEmoji?` <span class="status-emoji">${c.statusEmoji}</span>`:""}${c.verified?'<span class="verified"> ☑</span>':""}${c.muted?`<span class="muted-ic">${icon("mute")}</span>`:""}`;}
 function chatRowHTML(c){
-  var ticks=c.mine?'<span class="tick '+(c.ticks===2?"read":"sent")+'">'+tickSVG(c.ticks||1)+'</span>':"";
-  var preview=(c.sender?'<span class="sender">'+c.sender+': </span>':"")+(c.mine?'<b>You: </b>':"")+c.preview;
-  var right="";
-  if(c.unread) right='<span class="badge'+(c.muted?" gray":"")+'">'+c.unread+'</span>';
-  else if(c.pinned) right='<span class="pin-ic">'+svg("pin")+'</span>';
-  return '<div class="chat-row'+(c.pinned?" pinned":"")+'" data-chat="'+c.id+'">'+avatarHTML(c)+
-    '<div class="chat-main"><div class="chat-line1"><span class="chat-name">'+c.name+'</span>'+
-    (c.verified?verifiedSVG():"")+(c.muted?'<span class="mute-ic">'+svg("mute")+'</span>':"")+
-    '<span class="chat-time">'+ticks+c.time+'</span></div>'+
-    '<div class="chat-line2"><span class="chat-preview">'+preview+'</span>'+right+'</div></div></div>';
+  const preview=c.file?`<img class="file-thumb" src="img/photo-01.jpg" alt="">${c.preview}`:(c.sender?`<span class="sender">${c.sender}</span><br>${c.preview}`:c.preview);
+  return `<button class="chat-row" data-chat-row="${c.id}">
+    <span class="select-dot">✓</span>${avatarHTML(c,58)}
+    <span class="chat-main"><span class="chat-name">${nameHTML(c)}</span><span class="chat-preview ${c.sender?"two-line":""}">${preview}</span></span>
+    <span class="chat-meta"><span class="chat-time">${c.ticks?'<span class="ticks">✓✓</span>':""}${c.time}</span>${c.open?'<span class="unread open">OPEN</span>':""}${c.unread?`<span class="unread ${c.unreadGrey?"grey":""}">${c.unread}</span>`:""}</span>
+  </button>`;
 }
-function renderChats(filter){
-  var html="";
-  if(filter==="all"){
-    html+='<div class="chat-row" data-toast="Archived Chats"><div class="avatar" style="background:linear-gradient(135deg,#a8b6c1,#8b9ba8)">'+svg("archive")+'</div><div class="chat-main"><div class="chat-line1"><span class="chat-name">Archived Chats</span><span class="chat-time"></span></div><div class="chat-line2"><span class="chat-preview">Design Leaks, Crypto News, Study Group</span><span class="badge gray">3</span></div></div></div>';
-  }
-  chats.filter(function(c){return filter==="all"||c.type===filter||(filter==="personal"&&c.id==="saved");})
-       .forEach(function(c){html+=chatRowHTML(c);});
-  $("chatList").innerHTML=html||'<div class="list-caption">No chats here yet</div>';
-  var total=chats.reduce(function(s,c){return s+(!c.muted&&c.unread?c.unread:0);},0);
-  $("allBadge").textContent=total?total:"";
+function renderChats(filter="all"){
+  let list=chats;
+  if(filter==="groups")list=chats.filter(c=>c.category==="groups");
+  if(filter==="work")list=chats.filter(c=>c.category==="work");
+  if(filter==="bots")list=chats.filter(c=>c.category==="bots");
+  $("#chatList").innerHTML=list.map(chatRowHTML).join("");
 }
 function renderStories(){
-  $("stories").innerHTML=stories.map(function(s,i){
-    return '<button class="story'+(s.seen?" seen":"")+'" data-story="'+i+'"><span class="ring"><span class="avatar sm '+s.grad+'" style="width:56px;height:56px;font-size:20px">'+s.initials+'</span></span><span>'+s.name+'</span></button>';
-  }).join("");
+  $("#storyRow").innerHTML=stories.map(s=>`<button class="story" data-story="${s.name}"><span class="avatar-wrap ${s.ring||""}"><img src="${s.avatar}" alt="">${s.plus?'<i class="plus-badge">+</i>':""}${s.live?'<i class="live-badge">LIVE</i>':""}</span><span>${s.name}</span></button>`).join("");
+  $("#searchStories").innerHTML=searchStoriesData.map(s=>`<button class="story" data-story="${s.name}"><span class="avatar-wrap ${s.ring||""}"><img src="${s.avatar}" alt=""></span><span>${s.name}</span></button>`).join("");
 }
-
-/* ---------- Chat screen ---------- */
-function msgHTML(m){
-  if(m.date) return '<div class="date-pill"><span>'+m.date+'</span></div>';
-  var inner="";
-  if(m.name) inner+='<div class="sender-name" style="color:'+(m.color||"var(--accent)")+'">'+m.name+'</div>';
-  if(m.reply) inner+='<div class="reply-quote"><b>'+m.reply.who+'</b><span>'+m.reply.text+'</span></div>';
-  if(m.kind==="photo") inner+='<div class="photo-msg"></div>';
-  if(m.kind==="voice"){
-    var bars=[8,14,20,12,22,16,9,18,24,13,19,10,16,21,11,15,8,13];
-    inner+='<div class="voice"><span class="play">'+svg("play")+'</span><span><span class="wave">'+bars.map(function(h){return '<i style="height:'+h+'px"></i>';}).join("")+'</span><span class="vtime">'+(m.dur||"0:12")+'</span></span></div>';
-  }
-  if(m.kind==="file") inner+='<div class="file"><span class="f-ic">'+svg("download")+'</span><span><b>'+m.file+'</b><span>'+m.size+'</span></span></div>';
-  if(m.text) inner+=m.text.replace(/</g,"&lt;");
-  var tick=(m.from==="out")?'<span class="tick">'+tickSVG(m.ticks||1)+'</span>':"";
-  inner+='<span class="msg-time">'+m.time+tick+'</span>';
-  return '<div class="msg '+m.from+'"><div class="bubble">'+inner+'</div></div>';
+function contactRowHTML(c,mode="contact"){
+  const av=c.initial?`<span class="initial-avatar" style="width:47px;height:47px;background:${c.color}">${c.initial}</span>`:`<img src="${c.avatar}" alt="">`;
+  return `<button class="${mode==="recent"?"recent-row":"contact-row"}" data-contact="${c.chat||c.profile||""}" data-contact-kind="${c.chat?"chat":"profile"}">${av}<span class="contact-main"><span class="contact-name">${c.name}${c.statusEmoji?` ${c.statusEmoji}`:""}</span><span class="contact-status ${c.online?"online":""}">${c.status}</span></span></button>`;
 }
-function renderMessages(id){
-  var list=messages[id]||(messages[id]=defaultMessages(getChat(id)));
-  $("messages").innerHTML=list.map(msgHTML).join("");
-  requestAnimationFrame(function(){var el=$("messages");el.scrollTop=el.scrollHeight;});
+function renderContacts(){
+  $("#contactList").innerHTML=contacts.map(c=>contactRowHTML(c)).join("");
+  $("#recentList").innerHTML=contacts.slice(0,5).map(c=>contactRowHTML(c,"recent")).join("");
+  $("#callList").innerHTML=calls.map(c=>`<button class="call-row" data-call="${c.chat}"><img src="${c.avatar}" alt=""><span class="contact-main"><span class="contact-name">${c.name}</span><span class="call-kind ${c.kind==="missed"?"missed":c.kind==="in"?"in":""}">${c.kind==="missed"?"↙":c.kind==="in"?"↗":"↗"} ${c.label}</span></span><span class="call-side">${c.time}<br><span style="color:#1685f8;font-size:19px">ⓘ</span></span></button>`).join("");
+  $("#archivedList").innerHTML=archivedIds.map(id=>chatRowHTML(chats.find(c=>c.id===id))).join("");
 }
-function getChat(id){ return chats.filter(function(c){return c.id===id;})[0]; }
+function getChat(id){return chats.find(c=>c.id===id)||chats[1];}
+function meta(time="9:41",ticks=false){return `<span class="msg-meta">${time}${ticks?'<span class="ticks">✓✓</span>':""}</span>`;}
+function reactions(list){return `<span class="reactions">${list.map(r=>`<span class="reaction ${r[2]||""}">${r[0]} ${r[1]}</span>`).join("")}</span>`;}
+function msgIn(html,{time="9:41",avatar="",sender="",senderClass="blue",role="",react=null,cls=""}={}){
+  const hideMeta=cls.includes("channel-post");
+  return `<div class="msg-row in ${avatar?"with-avatar":""}">${avatar?`<img class="msg-avatar" src="${avatar}" alt="">`:""}<div class="bubble ${cls}" data-bubble>${role?`<span class="role-badge">${role}</span>`:""}${sender?`<div class="sender-name ${senderClass}">${sender}</div>`:""}${html}${hideMeta?"":meta(time)}${react?reactions(react):""}</div></div>`;
+}
+function msgOut(html,{time="9:41",react=null,quote=null,cls=""}={}){
+  return `<div class="msg-row out"><div class="bubble ${cls}" data-bubble>${quote?`<div class="quote-block"><b>${quote[0]}</b>${quote[1]}</div>`:""}${html}${meta(time,true)}${react?reactions(react):""}</div></div>`;
+}
+const service=t=>`<div class="service-row"><span class="service-pill">${t}</span></div>`;
+function waveHTML(){let h=[8,14,20,10,17,24,12,19,8,16,22,11,18,9,15,21,10,17,13,20,8,14,18,11,16,9,13,17];return `<span class="wave">${h.map(x=>`<i style="height:${x}px"></i>`).join("")}</span>`;}
+function mapCard(){return `<div class="msg-row in"><div class="map-card"><div class="map-graphic"><svg viewBox="0 0 310 145" preserveAspectRatio="none"><rect width="310" height="145" fill="#edf3df"/><path d="M0 92 C70 75 100 38 130 0 L178 0 C145 48 116 96 62 145 L0 145Z" fill="#b9dcf3"/><path d="M0 42 H118 M25 145 C50 100 85 58 150 20 M128 145 C155 95 200 45 264 0 M180 76 H310 M220 145 C238 96 260 48 292 0" stroke="#fff" stroke-width="10" fill="none"/><path d="M0 42 H118 M25 145 C50 100 85 58 150 20 M128 145 C155 95 200 45 264 0 M180 76 H310" stroke="#ddd6c8" stroke-width="2" fill="none"/><rect x="12" y="52" width="58" height="34" fill="#f3d5ca"/><rect x="92" y="96" width="58" height="36" fill="#f3d5ca"/><rect x="225" y="22" width="60" height="38" fill="#f3d5ca"/><text x="88" y="78" font-size="9" fill="#9a958a" transform="rotate(-48 88 78)">HERRENGRABEN</text><circle cx="166" cy="107" r="7" fill="#8e44ad"/><text x="178" y="102" font-size="10" fill="#7d3c98">Hotel Motel</text><text x="178" y="114" font-size="10" fill="#7d3c98">One Hamburg-</text><text x="178" y="126" font-size="10" fill="#7d3c98">Fleetinsel</text><circle cx="139" cy="72" r="8" fill="#1685f8" stroke="#fff" stroke-width="3"/></svg></div><div class="map-foot"><div class="map-foot-main"><b>Live Location</b><span>updated just now</span></div><span class="live-count">14</span></div></div></div>`;}
+function diceHTML(){return `<div class="dice-wrap"><div class="dice"><i></i><i class="off"></i><i></i><i class="off"></i><i></i><i class="off"></i><i></i><i class="off"></i><i></i></div><span class="time-chip">9:41</span></div>`;}
+function chatContent(id){
+  if(id==="cat")return mapCard()+msgOut("Send a dice emoji to roll a die!")+diceHTML()+msgOut("Advance to Illinois Ave. If you pass Go, collect coffee")+msgIn("Passed!")+`<div class="round-video"><img src="img/cat-round-video.jpg" alt="Cat video message"><span class="time-chip duration">0:04 •</span><span class="mute-dot">${icon("mute")}</span><span class="time-chip rv-time">9:41</span></div>`+msgOut("Okay")+msgOut("Wait for me there.");
+  if(id==="nomads")return service("Dog joined the group")+`<div class="msg-row in with-avatar"><img class="msg-avatar" src="${AV.leo}" alt=""><div class="sticker-croc"><span class="hi">Hi</span><span class="croc">🐊</span></div><span class="time-chip" style="align-self:flex-end">9:41</span></div>`+msgOut("Do you have any idea what time it is?",{quote:["Penguin","Good morning! 👋"],react:[["😄",5,"grey"],["🫡",2,"grey"]]})+msgIn(`<div class="poll-q">is it still morning? 🤔</div><div class="poll-type">Anonymous Poll</div><div class="poll-option"><div>67%&nbsp; <b>Sure!</b></div><span class="poll-check">✓</span><div class="poll-bar" style="width:67%"></div></div><div class="poll-option"><div>33%&nbsp; <b>Not Sure</b></div><div class="poll-bar" style="width:33%"></div></div><div class="poll-votes">345 votes</div>`,{avatar:AV.pepe,sender:"Pepe",cls:"poll-bubble"})+msgIn(`<div class="voice-row"><button class="play-btn" data-toast="Playing voice message">${icon("play")}</button>${waveHTML()}<span class="voice-side"><span class="transcribe">→A</span><span>0:21 •</span></span></div>`,{avatar:AV.cat,sender:'Cat <span class="premium-star">★</span>',role:"Owner"});
+  if(id==="dog")return service("Today")+`<div class="sticker-hamster"><span class="hi a">Hi</span>🐹<span class="hi b">Hi</span></div><div style="margin-left:190px" class="time-chip">9:41</div>`+`<div class="msg-row in"><button class="bubble photo-bubble" data-view-photo="img/dog-cats-album.jpg"><img src="img/dog-cats-album.jpg" alt="Cats album"></button></div>`+msgOut("No limits on the size of your cats.")+msgIn(`<span class="call-bubble"><span>Incoming Call<small>↗ 9:41 (1 minute)</small></span><span class="call-ic">${icon("phone")}</span></span>`);
+  if(id==="dolphin")return msgIn("Any gift ideas for mom?")+service("You set the self-destruct timer to 1 minute")+msgOut("A dog!")+`<div class="msg-row in"><div class="self-destruct"><span class="sd-count">↻ 1</span><span class="flame">🔥</span><span class="time-chip" style="position:absolute;right:7px;bottom:7px;z-index:1">9:41</span></div></div>`+msgOut("I'm serious. Let's get her a puppy. 🐶")+service("Dolphin took a screenshot!")+msgOut("I saw this!")+`<div class="sticker-msg" style="margin-left:190px">🍑</div>`+msgIn("I needed proof this was your idea! 😭🤨");
+  if(id==="pavel")return msgIn(`📝 All Telegram chatbots can now stream responses to users in real time — great for AI assistants.`,{cls:"channel-post",react:[["⭐",563,"warm"],["❤️",312],["🏆",98],["🔥",65],["😄",51],["🤡",12]]}).replace("</div></div>",`<span class="post-views">👁 3,1M&nbsp;&nbsp;Pavel Durov&nbsp;&nbsp;9:41</span><span class="forward-arrow">${icon("forward")}</span></div></div>`)+service("March 23")+msgIn(`💸 Telegram has fully repaid the bonds we issued 5 years ago. 🌌<br><br>💰 Since 2021, we’ve built an innovative monetization strategy and reached profitability in 2024. As a result, our new bond issuance last year was oversubscribed. 💪<br><br>🙏 Thank you for your support!`,{cls:"channel-post",react:[["⭐","39,4K","warm"],["❤️","72K"],["🏆","19,4K"],["🔥","18,6K"],["😄","8,4K"]]}).replace("</div></div>",`<span class="post-views">👁 1,6M&nbsp;&nbsp;Pavel Durov&nbsp;&nbsp;9:41</span><span class="forward-arrow">${icon("forward")}</span></div></div>`);
+  if(id==="wallet")return `<div class="bot-hero"><div class="hero-emoji">🪙👛🪙</div><h2>What can this bot do?</h2><p>With Wallet you can buy, sell and transfer cryptocurrencies instantly to your contacts.</p></div><button class="bot-start" id="btnWalletStart">Start</button>`;
+  if(id==="catch")return msgOut("/Start")+msgIn(`Welcome to <b>Catch News!</b> 📣<br><br>The world is changing every second, and we're here to make sure you don't miss a thing. Only the most important, interesting, and relevant stories. 🚀<br><br>📸 World events<br>🔝 Top trends<br>🌐 Global news`)+`<div class="bot-buttons"><button class="wide" data-toast="Write">✍️ Write</button><button class="about" data-toast="About Catch News">ℹ️ About ↗</button><button class="unsub" data-toast="Unsubscribed">⛔ Unsubscribe</button></div>`;
+  if(id==="saved")return service("Saved Messages")+`<div class="msg-row out"><button class="bubble photo-bubble" data-view-photo="img/photo-01.jpg"><img src="img/photo-01.jpg" alt="IMG_420.png"></button></div>`+msgOut("IMG_420.png");
+  if(id==="penguin")return msgIn("Check these out!")+`<div class="msg-row in"><button class="bubble photo-bubble" data-view-photo="img/photo-08.jpg"><img src="img/photo-08.jpg" alt="Shared photo"></button></div>`+msgOut("Nice!");
+  if(id==="team16")return service("16Bit Team started a Live Stream")+msgIn("We are live! 🍓",{react:[["❤️",12],["🔥",4]]});
+  if(id==="news")return msgIn("Top trends and global news",{cls:"channel-post",react:[["⭐",24,"warm"],["❤️",18]]});
+  const c=getChat(id);return service("Today")+msgIn(c.preview)+msgOut("Okay");
+}
 function openChat(id){
-  var c=getChat(id); if(!c) return;
-  currentChat=c; c.unread=0;
-  $("chatAvatar").outerHTML=avatarHTML(c,"sm").replace('class="avatar','id="chatAvatar" class="avatar');
-  $("chatName").innerHTML=c.name+(c.verified?verifiedSVG():"");
-  var st=$("chatStatus"); st.textContent=c.status||""; st.classList.toggle("online",c.status==="online"); st.classList.remove("typing");
-  renderMessages(id);
-  go("chat");
+  const c=getChat(id);currentChatId=id;
+  const scr=$("#scr-chat");scr.className=`screen chat-screen ${c.wall||"wall-green"}`;
+  $("#chatName").innerHTML=nameHTML(c);
+  const st=$("#chatStatus");st.textContent=c.status||"";st.classList.toggle("online",!!c.statusOnline);
+  const avatarBtn=$("#chatAvatarBtn");
+  if(c.avatar==="saved"||c.avatar==="wallet")avatarBtn.innerHTML=avatarHTML(c,39);
+  else avatarBtn.innerHTML=`<img id="chatAvatar" src="${c.avatar}" alt="">`;
+  $("#backCount").style.display=c.backCount?"grid":"none";$("#backCount").textContent=c.backCount||"";
+  $("#messages").innerHTML=chatContent(id);
+  const isChannel=c.type==="channel";
+  $("#composer").hidden=isChannel;$("#channelBar").hidden=!isChannel;
+  $("#btnBotMenu").hidden=!(id==="catch");$("#btnAttach").hidden=(id==="catch");
+  if(id==="catch")$("#btnAttach").hidden=false;
+  $("#secretTimer").hidden=c.type!=="secret";
+  $("#replyPreview").hidden=true;replyText="";
+  $("#msgInput").value="";updateComposer();
+  showScreen("chat");
+  requestAnimationFrame(()=>{$("#messages").scrollTop=$("#messages").scrollHeight;});
+  const start=$("#btnWalletStart");if(start)start.addEventListener("click",()=>{start.remove();appendMessage(msgOut("/start"));setTimeout(()=>appendMessage(msgIn("Welcome to Crypto Wallet!")),350);});
 }
-function setProfile(c){
-  $("profileName").textContent=c.name;
-  var st=c.id==="me"?"online":(c.status||"last seen recently");
-  $("profileStatus").textContent=st;
-  $("profilePhone").textContent=c.phone||"+1 555 010 1234";
-  $("profileUser").textContent=c.username||("@"+c.name.toLowerCase().replace(/[^a-z0-9]+/g,""));
-  var head=$("profileHead");
-  head.className="profile-head "+(c.grad&&c.grad.indexOf("grad-")===0&&/grad-\d/.test(c.grad)?c.grad:"");
+function appendMessage(html){const m=$("#messages");m.insertAdjacentHTML("beforeend",html);m.scrollTop=m.scrollHeight;}
+function updateComposer(){
+  const ta=$("#msgInput"),btn=$("#btnSend"),ic=$("#sendIcon");
+  ta.style.height="auto";ta.style.height=Math.min(96,ta.scrollHeight)+"px";
+  const ready=ta.value.trim().length>0;btn.classList.toggle("ready",ready);ic.innerHTML=icon(ready?"send":"mic");
 }
-function renderMedia(){
-  var h=""; for(var i=1;i<=9;i++) h+='<i class="mg'+i+'"></i>';
-  $("mediaGrid").innerHTML=h;
+function profileActions(kind){
+  if(kind==="group")return `<div class="profile-actions"><button class="profile-action" data-open-chat="nomads">${icon("chats")}message</button><button class="profile-action" data-toast="Notifications muted">${icon("bell")}mute</button><button class="profile-action" data-toast="Search">${icon("search")}search</button><button class="profile-action" data-toast="More">${icon("more")}more</button></div>`;
+  return `<div class="profile-actions"><button class="profile-action" data-toast="Calling…">${icon("phone")}call</button><button class="profile-action" data-toast="Starting video call…">${icon("video")}video</button><button class="profile-action" data-toast="Notifications muted">${icon("bell")}mute</button><button class="profile-action" data-toast="Search">${icon("search")}search</button><button class="profile-action" data-toast="More">${icon("more")}more</button></div>`;
 }
+function mediaGrid(){return `<div class="media-grid">${[2,8,10,1,5,7,3,11,12].map(n=>`<button data-view-photo="img/photo-${String(n).padStart(2,"0")}.jpg"><img src="img/photo-${String(n).padStart(2,"0")}.jpg" alt=""></button>`).join("")}</div>`;}
+function giftGrid(){const gifts=[["💖",25],["🔔",25],["🎁",50],["⭐",100],["🦔",25],["🍑",15],["🐸",30],["💎",250]];return `<div class="gift-grid">${gifts.map(g=>`<button class="gift-card" data-toast="Gift details"><span class="gift-emoji">${g[0]}</span><br><span class="gift-price">★ ${g[1]}</span></button>`).join("")}</div>`;}
+function infoCard(rows){return `<div class="info-card">${rows.map(r=>`<div class="info-row"><div class="info-label">${r[0]}</div><div class="info-value ${r[2]?"blue":""}">${r[1]}</div></div>`).join("")}</div>`;}
+function openProfile(id){
+  currentProfileId=id;let html="";
+  if(id==="cat"){
+    html=`<div class="profile-head cat-head"><div class="profile-nav"><button class="glass-round" data-back>${icon("back")}</button><span class="spacer"></span><button class="glass-pill" data-toast="Edit">Edit</button></div><img class="profile-avatar ringed" src="${AV.catLarge}" alt=""><div class="profile-name">Cat ★</div><div class="profile-status"><span class="back-count" style="display:inline-grid;vertical-align:-4px">8</span> last seen just now</div>${profileActions()}<div class="profile-music">♫ project x <span style="opacity:.75">- halfadedd</span> ›</div></div>
+    <div class="profile-body"><div class="channel-label"><span>CHANNEL</span><span>17 173 subscribers</span></div><div class="channel-card"><button class="channel-mini" data-toast="Open channel"><img src="img/cat-round-video.jpg" alt=""><span class="channel-mini-main"><b>Cats's head 🔗</b><span>Voice Message</span></span><span style="color:#999">9:41<br><span class="unread">12</span></span></button></div>
+    ${infoCard([["mobile","+888 888 888",1],["username","@cat",1],["birthday","6 Jul"]])}
+    <div class="profile-tabs"><button class="active" data-profile-tab="posts">Posts</button><button data-profile-tab="gifts">Gifts</button><button data-profile-tab="media">Media</button><button data-profile-tab="files">Files</button><button data-profile-tab="music">Music</button></div>
+    <div data-profile-pane="posts">${mediaGrid()}</div><div data-profile-pane="gifts" hidden><div class="gift-filters"><button class="active">All Gifts</button><button data-toast="Craft Gift">Craft</button><button data-toast="Friends">Friends</button></div>${giftGrid()}<button class="profile-primary" data-toast="Send Gift">Send Gift</button></div><div data-profile-pane="media" hidden>${mediaGrid()}</div><div data-profile-pane="files" hidden>${infoCard([["IMG_420.png","2.4 MB"],["Design.pdf","1.1 MB"]])}</div><div data-profile-pane="music" hidden>${infoCard([["project x","halfadedd"]])}</div></div>`;
+  }else if(id==="dino"){
+    html=`<div class="profile-head"><div class="profile-nav"><button class="glass-round" data-back>${icon("back")}</button><span class="spacer"></span><button class="glass-pill" data-toast="Edit">Edit</button></div><img class="profile-avatar" src="${AV.dinoLarge}" alt=""><div class="profile-name">Dinosaur ★</div><div class="profile-status">+888 888 888 • @dino</div><div style="height:18px"></div></div>
+    <div class="profile-body"><div class="profile-tabs"><button data-profile-tab="posts">Posts</button><button class="active" data-profile-tab="gifts">Gifts</button><button data-profile-tab="media">Media</button></div><div data-profile-pane="posts" hidden>${mediaGrid()}</div><div data-profile-pane="gifts"><div class="gift-filters"><button class="active">All Gifts</button><button data-toast="Craft Gift">Craft</button><button data-toast="Friends">Friends</button></div>${giftGrid()}<button class="profile-primary" data-toast="Send Gifts to Friends">Send Gifts to Friends</button></div><div data-profile-pane="media" hidden>${mediaGrid()}</div></div>`;
+  }else if(id==="nomads"){
+    const members=[["Penguin",AV.penguin,"online",""],["Dolphin",AV.dolphin,"online",""],["Dog",AV.dog,"last seen 3 minutes ago",""],["Cat",AV.cat,"last seen 4 minutes ago","Owner"],["Elephant","","last seen 15 minutes ago",""],["Pepe",AV.pepe,"last seen recently",""],["Giraffe","","last seen recently",""]];
+    html=`<div class="profile-head white-head"><div class="profile-nav"><button class="glass-round" data-back>${icon("back")}</button><span class="spacer"></span><button class="glass-pill" data-toast="Edit">Edit</button></div><img class="profile-avatar" src="${AV.nomads}" alt=""><div class="profile-name" style="font-size:22px">Digital Nomads</div><div class="profile-status" style="color:#888">2,503 members, 736 online</div>${profileActions("group")}</div>
+    <div class="profile-body"><div class="profile-tabs"><button class="active">Members</button><button data-toast="Media">Media</button><button data-toast="Files">Files</button><button data-toast="Music">Music</button></div><div class="profile-card"><button class="member-row" data-toast="Add Members"><span class="setting-ic blue">${icon("person-plus")}</span><span class="member-main"><span class="member-name" style="color:#1685f8">Add Members</span></span></button>${members.map(m=>`<button class="member-row" data-toast="${m[0]}">${m[1]?`<img src="${m[1]}" alt="">`:`<span class="initial-avatar" style="width:45px;height:45px">${m[0][0]}</span>`}<span class="member-main"><span class="member-name">${m[0]}</span><br><span class="member-status">${m[2]}</span></span>${m[3]?`<span class="member-role">${m[3]}</span>`:""}</button>`).join("")}</div></div>`;
+  }else if(id==="wallet"){
+    html=`<div class="profile-head white-head"><div class="profile-nav"><button class="glass-round" data-back>${icon("back")}</button><span class="spacer"></span><button class="glass-round" data-toast="More">${icon("more")}</button></div><span class="wallet-avatar" style="width:88px;height:88px;margin:8px auto 6px">${icon("wallet")}</span><div class="profile-name" style="font-size:23px">Wallet ☑</div><div class="profile-status" style="color:#888">bot</div>${profileActions("group")}</div>
+    <div class="profile-body">${infoCard([["@wallet","Buy and send USDT, Gold, Bitcoin, TON and other crypto.<br>Trusted by 150M users<br>24/7 support: @wallet_support"]])}<button class="profile-primary" data-open-chat="wallet">Open App</button><div class="wallet-preview"><div class="wallet-mini"><b>Wallet</b><span>Balance</span><strong>$0.00</strong></div><div class="wallet-mini"><b>TON</b><span>Price</span><strong>$5.42</strong></div><div class="wallet-mini"><b>USDT</b><span>Price</span><strong>$1.00</strong></div></div></div>`;
+  }else if(id==="pavel"){
+    html=`<div class="profile-head dark-head"><div class="profile-nav"><button class="glass-round" data-back>${icon("back")}</button><span class="spacer"></span><button class="glass-round" data-toast="More">${icon("more")}</button></div><img class="profile-avatar" src="${AV.pavel}" alt=""><div class="profile-name" style="font-size:23px">Pavel Durov 📚 ☑</div><div class="profile-status">10,288,126 subscribers</div>${profileActions("group")}</div>
+    <div class="profile-body">${infoCard([["share link","https://t.me/durov",1],["description","Founder of Telegram."]])}<div class="profile-tabs"><button class="active">Posts</button><button data-toast="Media">Media</button><button data-toast="Files">Files</button><button data-toast="Links">Links</button></div>${mediaGrid()}</div>`;
+  }else{
+    const c=contacts.find(x=>x.profile===id)||getChat(id);
+    const img=c.avatar&&c.avatar.startsWith("img/")?c.avatar:AV.dino;
+    html=`<div class="profile-head"><div class="profile-nav"><button class="glass-round" data-back>${icon("back")}</button><span class="spacer"></span><button class="glass-pill" data-toast="Edit">Edit</button></div>${c.avatar==="saved"||c.avatar==="wallet"?`<span style="display:block;width:100px;margin:8px auto 6px">${avatarHTML(c,100)}</span>`:c.initial?`<span class="initial-avatar" style="width:100px;height:100px;margin:8px auto 6px;font-size:38px;background:${c.color}">${c.initial}</span>`:`<img class="profile-avatar" src="${img}" alt="">`}<div class="profile-name">${c.name}</div><div class="profile-status">${c.status||"last seen recently"}</div>${profileActions()}</div><div class="profile-body">${infoCard([["mobile","+888 888 888",1],["username","@"+String(c.name).toLowerCase().replace(/\s+/g,""),1]])}<div class="profile-tabs"><button class="active">Posts</button><button data-toast="Gifts">Gifts</button><button data-toast="Media">Media</button><button data-toast="Files">Files</button><button data-toast="Music">Music</button></div>${mediaGrid()}</div>`;
+  }
+  $("#profileContent").innerHTML=html;
+  $("#profileContent").scrollTop=0;
+  showScreen("profile");
+}
+function renderAttach(){
+  const items=[1,2,3,4,5,6,7,8,9,10,11,12,1,5,8,3,10,12];
+  $("#attachGrid").innerHTML=items.map((n,i)=>`<button class="attach-tile" data-attach="${i}" data-src="img/gallery-${String(n).padStart(2,"0")}.jpg"><img src="img/gallery-${String(n).padStart(2,"0")}.jpg" alt="">${i===0?`<span class="attach-insta">${icon("instagram")}</span>`:`<span class="attach-select"></span>`}</button>`).join("");
+}
+function renderEmojiPanel(type="emoji"){
+  const el=$("#emojiContent");
+  if(type==="emoji"){
+    const recent=["🫡","🐸","🥲","😗","😱","🥴","😓","🚽","✅","⛔"];
+    const all="😀 😃 😄 😁 😆 🥹 😅 😂 🤣 🥲 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤨 🧐 🤓 😎 🥸 🤩 🥳 😏 😒 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮‍💨 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🫣 🤔 🫢".split(" ");
+    el.innerHTML=`<div class="emoji-section">RECENTLY USED</div><div class="emoji-grid">${recent.map(e=>`<button data-emoji="${e}">${e}</button>`).join("")}</div><div class="emoji-section">ANIMATED EMOJI</div><div class="emoji-grid">${all.map(e=>`<button data-emoji="${e}">${e}</button>`).join("")}</div>`;
+  }else if(type==="stickers"){
+    el.innerHTML=`<div class="emoji-section">FAVORITE STICKERS</div><div class="sticker-grid">${["🍒","🦆","🐊","🐻","🐹"].map(e=>`<button data-sticker="${e}">${e}</button>`).join("")}</div><div class="emoji-section">RECENTLY USED</div><div class="sticker-grid"><button class="create-sticker" data-toast="Create Sticker"><b>+</b>Create<br>Sticker</button>${["🎁","🍑","🔥","🍎","🐊","🐻"].map(e=>`<button data-sticker="${e}">${e}</button>`).join("")}</div><div class="emoji-section">LIFE’S A PEACH</div><div class="sticker-grid">${Array.from({length:20},()=>`<button data-sticker="🍑">🍑</button>`).join("")}</div>`;
+  }else{
+    el.innerHTML=`<div class="gif-grid">${[1,2,3,4,5,6].map(n=>`<button data-gif="img/photo-${String(n).padStart(2,"0")}.jpg"><img src="img/photo-${String(n).padStart(2,"0")}.jpg" alt=""><span>GIF</span></button>`).join("")}</div>`;
+  }
+  $$("#emojiTabs button").forEach(b=>b.classList.toggle("active",b.dataset.panel===type));
+}
+function renderEmojiPacks(){
+  $("#emojiPackRow").innerHTML=`<button data-toast="Recent">${icon("clock")}</button><button data-toast="Emoji">😄</button><button data-toast="Ducks">🦆</button><button data-toast="Crocodile">🐊</button><button data-toast="Hamster">🐹</button><button data-toast="Peach">🍑</button><button data-toast="Bear">🐻</button><button data-toast="More packs">👾</button>`;
+}
+function openAttach(){closePanels();$("#attachBackdrop").hidden=false;$("#attachSheet").hidden=false;}
+function openEmoji(){closePanels();$("#emojiPanel").hidden=false;renderEmojiPanel($("#emojiTabs .active")?.dataset.panel||"emoji");}
+function closePanels(){$("#attachBackdrop").hidden=true;$("#attachSheet").hidden=true;$("#emojiPanel").hidden=true;}
+function openContext({reactions:showR=true,items=[],target=null,text=""}={}){
+  contextTarget=target;
+  $("#reactionBar").hidden=!showR;
+  $("#reactionBar").innerHTML=["❤️","👍","👎","🔥","🥰","👏","😁","🤔"].map(e=>`<button data-reaction="${e}">${e}</button>`).join("");
+  $("#contextMenu").innerHTML=items.map(i=>`<button data-context-action="${i.action}" class="${i.danger?"danger":""}"><span>${i.label}</span>${icon(i.icon||"more")}</button>`).join("");
+  $("#contextMenu").dataset.text=text;
+  $("#contextBackdrop").hidden=false;
+}
+function closeContext(){$("#contextBackdrop").hidden=true;contextTarget=null;}
+function openMessageContext(bubble){
+  const own=bubble.closest(".msg-row")?.classList.contains("out");
+  const items=[{label:"Reply",action:"reply",icon:"reply"},{label:"Pin",action:"pin",icon:"pin"},{label:"Copy",action:"copy",icon:"copy"},{label:"Forward",action:"forward",icon:"forward"}];
+  if(own)items.push({label:"Edit",action:"edit",icon:"edit"});
+  items.push({label:"Delete",action:"delete",icon:"trash",danger:true});
+  openContext({items,target:bubble.closest(".msg-row"),text:bubble.innerText.trim()});
+}
+function openChatContext(id){
+  openContext({reactions:false,items:[{label:"Add to Folder",action:"folder",icon:"archive"},{label:"Mark as Unread",action:"unread",icon:"comment"},{label:"Pin",action:"pin",icon:"pin"},{label:"Mute",action:"mute",icon:"mute"},{label:"Delete",action:"delete-chat",icon:"trash",danger:true}],text:id});
+}
+function addReactionToTarget(emoji){
+  if(!contextTarget)return;
+  const bubble=contextTarget.querySelector(".bubble");if(!bubble)return;
+  let box=bubble.querySelector(".reactions");
+  if(!box){box=document.createElement("span");box.className="reactions";bubble.appendChild(box);}
+  const pill=document.createElement("span");pill.className="reaction";pill.textContent=`${emoji} 1`;box.appendChild(pill);
+}
+function openViewer(src,name="Dolphin",date="Feb 6 at 9:41"){
+  $("#viewerImg").src=src;$("#viewerName").textContent=name;$("#viewerDate").textContent=date;
+  const thumbs=["img/viewer-london.jpg","img/photo-02.jpg","img/photo-08.jpg"];
+  $("#viewerThumbs").innerHTML=thumbs.map((t,i)=>`<button class="${t===src?"active":""}" data-thumb="${t}"><img src="${t}" alt=""></button>`).join("");
+  $("#photoViewer").hidden=false;$("#iosStatus").classList.add("on-dark");
+}
+function closeViewer(){$("#photoViewer").hidden=true;$("#iosStatus").classList.remove("on-dark");}
 
-/* ---------- Contacts / calls / search ---------- */
-function renderContacts(q){
-  $("contactList").innerHTML=contacts.filter(function(c){return !q||c.name.toLowerCase().indexOf(q)>-1;}).map(function(c){
-    return '<div class="contact-row" data-contact="'+c.name+'"><div class="avatar '+c.grad+'">'+c.initials+(c.on?'<span class="online-dot"></span>':"")+'</div><div><div class="c-name">'+c.name+'</div><div class="c-seen'+(c.on?" on":"")+'">'+c.seen+'</div></div></div>';
-  }).join("");
-}
-function renderCalls(){
-  $("callList").innerHTML=calls.map(function(c){
-    var arrow=c.dir==="out"?svg("arrowOut"):svg("arrowIn");
-    return '<div class="call-row" data-toast="Calling '+c.name+'…"><div class="avatar '+c.grad+'">'+c.initials+'</div><div style="flex:1"><div class="c-name"'+(c.dir==="missed"?' style="color:var(--destructive)"':"")+'>'+c.name+'</div><div class="call-meta"><span class="call-dir '+c.dir+'">'+arrow+'</span>'+c.meta+'</div></div><span class="iconbtn" style="color:var(--accent)">'+svg("phone")+'</span></div>';
-  }).join("");
-}
-function resultRow(c){
-  return '<div class="chat-row" data-chat="'+c.id+'">'+avatarHTML(c)+'<div class="chat-main"><div class="chat-line1"><span class="chat-name">'+c.name+'</span>'+(c.verified?verifiedSVG():"")+'</div><div class="chat-line2"><span class="chat-preview">'+(c.username||c.status||"")+'</span></div></div></div>';
-}
-function renderSearch(q){
-  var list=q?chats.filter(function(c){return c.name.toLowerCase().indexOf(q)>-1;}):chats.slice(1,6);
-  $("searchCaption").textContent=q?"Chats and contacts":"Recent";
-  $("searchResults").innerHTML=list.length?list.map(resultRow).join(""):'<div class="list-caption">No results found</div>';
-}
-
-/* ---------- Events ---------- */
-document.addEventListener("click",function(e){
-  var t;
-  if((t=e.target.closest("[data-openchat]"))){ closeAllOverlays(); openChat(t.getAttribute("data-openchat")); return; }
-  if((t=e.target.closest("[data-chat]"))){ openChat(t.getAttribute("data-chat")); return; }
-  if((t=e.target.closest("[data-contact]"))){
-    var name=t.getAttribute("data-contact");
-    var ct=contacts.filter(function(x){return x.name===name;})[0];
-    if(ct&&ct.chat){ openChat(ct.chat); }
-    else{
-      var id="c-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-");
-      if(!getChat(id)) chats.unshift({id:id,name:name,type:"personal",preview:"Say hello to "+name.split(" ")[0],time:nowStr(),status:ct?ct.seen:"",online:ct&&ct.on,grad:ct?ct.grad:"grad-5",initials:ct?ct.initials:initialsOf(name),username:"@"+name.toLowerCase().replace(/[^a-z0-9]+/g,"")});
-      openChat(id);
+function bind(){
+  fillIcons();renderStories();renderChats();renderContacts();renderAttach();renderEmojiPacks();renderEmojiPanel();
+  $$(".nav-item").forEach(b=>b.addEventListener("click",()=>goMain(b.dataset.nav)));
+  $("#btnOpenSearch").addEventListener("click",()=>{showScreen("search");setTimeout(()=>$("#searchInput").focus(),80);});
+  $("#btnCloseSearch").addEventListener("click",()=>goMain("chats"));
+  $("#btnCompose").addEventListener("click",()=>goMain("contacts"));
+  $("#btnScan").addEventListener("click",()=>toast("Scan QR code"));
+  $("#btnArchived").addEventListener("click",()=>showScreen("archived"));
+  $("#folderRow").addEventListener("click",e=>{const b=e.target.closest("[data-folder]");if(!b)return;$$("#folderRow .folder").forEach(x=>x.classList.toggle("active",x===b));renderChats(b.dataset.folder);});
+  $("#chatListScroll").addEventListener("scroll",e=>{$("#chatsHeader").classList.toggle("collapsed",e.target.scrollTop>46);});
+  $("#btnEditChats").addEventListener("click",()=>{chatEditMode=!chatEditMode;$("#scr-chats").classList.toggle("edit-mode",chatEditMode);$("#btnEditChats").textContent=chatEditMode?"Done":"Edit";$("#mainNav").classList.toggle("hidden",chatEditMode);if(!chatEditMode)$$(".chat-row.selected").forEach(r=>r.classList.remove("selected"));});
+  $("#btnReadAll").addEventListener("click",()=>{chats.forEach(c=>delete c.unread);renderChats($("#folderRow .active")?.dataset.folder||"all");renderContacts();toast("All chats marked as read");});
+  $("#btnArchiveSel").addEventListener("click",()=>toast("Archived"));
+  $("#btnDeleteSel").addEventListener("click",()=>{const ids=$$(".chat-row.selected").map(r=>r.dataset.chatRow);if(!ids.length)return toast("Select chats first");chats=chats.filter(c=>!ids.includes(c.id));renderChats();toast("Deleted");});
+  document.addEventListener("click",e=>{
+    const back=e.target.closest("[data-back]");if(back){goBack();return;}
+    const go=e.target.closest("[data-go]");if(go){goMain(go.dataset.go);return;}
+    const oc=e.target.closest("[data-open-chat]");if(oc){openChat(oc.dataset.openChat);return;}
+    const op=e.target.closest("[data-open-profile]");if(op){openProfile(op.dataset.openProfile);return;}
+    const story=e.target.closest("[data-story]");if(story){toast(story.dataset.story==="My Story"?"Add to Story":`${story.dataset.story}’s story`);return;}
+    const contact=e.target.closest("[data-contact]");if(contact&&contact.dataset.contact){contact.dataset.contactKind==="chat"?openChat(contact.dataset.contact):openProfile(contact.dataset.contact);return;}
+    const call=e.target.closest("[data-call]");if(call){toast("Calling…");return;}
+    const tab=e.target.closest("[data-profile-tab]");if(tab){const wrap=tab.closest(".profile-body");$$("[data-profile-tab]",wrap).forEach(b=>b.classList.toggle("active",b===tab));$$("[data-profile-pane]",wrap).forEach(p=>p.hidden=p.dataset.profilePane!==tab.dataset.profileTab);return;}
+    const view=e.target.closest("[data-view-photo]");if(view){openViewer(view.dataset.viewPhoto,getChat(currentChatId).name);return;}
+    const thumb=e.target.closest("[data-thumb]");if(thumb){openViewer(thumb.dataset.thumb,$("#viewerName").textContent,$("#viewerDate").textContent);return;}
+    const t=e.target.closest("[data-toast]");if(t){toast(t.dataset.toast);return;}
+  });
+  let pressTimer=null;
+  document.addEventListener("pointerdown",e=>{
+    const row=e.target.closest("[data-chat-row]"),bubble=e.target.closest("[data-bubble]");
+    pressTimer=setTimeout(()=>{suppressClick=true;if(bubble)openMessageContext(bubble);else if(row)openChatContext(row.dataset.chatRow);},560);
+  });
+  ["pointerup","pointercancel","pointerleave"].forEach(ev=>document.addEventListener(ev,()=>clearTimeout(pressTimer),{passive:true}));
+  document.addEventListener("contextmenu",e=>{const b=e.target.closest("[data-bubble]"),r=e.target.closest("[data-chat-row]");if(b||r){e.preventDefault();suppressClick=true;b?openMessageContext(b):openChatContext(r.dataset.chatRow);}});
+  document.addEventListener("click",e=>{
+    const row=e.target.closest("[data-chat-row]");if(!row)return;
+    if(suppressClick){suppressClick=false;return;}
+    if(chatEditMode&&currentScreen==="chats"){row.classList.toggle("selected");return;}
+    openChat(row.dataset.chatRow);
+  });
+  $("#chatAvatarBtn").addEventListener("click",()=>openProfile(currentChatId));
+  $("#chatTitlePill").addEventListener("click",()=>openProfile(currentChatId));
+  $("#btnAttach").addEventListener("click",openAttach);
+  $("#btnCloseAttach").addEventListener("click",closePanels);
+  $("#attachBackdrop").addEventListener("click",closePanels);
+  $("#btnEmoji").addEventListener("click",()=>$("#emojiPanel").hidden?openEmoji():closePanels());
+  $("#emojiTabs").addEventListener("click",e=>{const b=e.target.closest("[data-panel]");if(b)renderEmojiPanel(b.dataset.panel);});
+  $("#btnEmojiDelete").addEventListener("click",()=>{const ta=$("#msgInput");ta.value=ta.value.slice(0,-1);updateComposer();});
+  $("#emojiContent").addEventListener("click",e=>{
+    const em=e.target.closest("[data-emoji]");if(em){const ta=$("#msgInput");ta.value+=em.dataset.emoji;updateComposer();ta.focus();return;}
+    const st=e.target.closest("[data-sticker]");if(st){appendMessage(`<div class="msg-row out"><div class="sticker-msg" style="margin:4px 4px 2px 0">${st.dataset.sticker}</div></div>`);closePanels();return;}
+    const gif=e.target.closest("[data-gif]");if(gif){appendMessage(`<div class="msg-row out"><button class="bubble photo-bubble" data-view-photo="${gif.dataset.gif}"><img src="${gif.dataset.gif}" alt="GIF"></button></div>`);closePanels();}
+  });
+  $("#attachGrid").addEventListener("click",e=>{
+    const tile=e.target.closest("[data-attach]");if(!tile)return;
+    if(tile.classList.contains("selected")){
+      appendMessage(`<div class="msg-row out"><button class="bubble photo-bubble" data-view-photo="${tile.dataset.src}"><img src="${tile.dataset.src}" alt="Photo"></button></div>`);
+      tile.classList.remove("selected");tile.querySelector(".attach-select")&&(tile.querySelector(".attach-select").textContent="");closePanels();return;
     }
-    return;
-  }
-  if((t=e.target.closest("[data-story]"))){
-    var s=stories[+t.getAttribute("data-story")];
-    $("storyName").textContent=s.name==="My Story"?"Your story":s.name;
-    var av=$("storyAvatar"); av.className="avatar sm "+s.grad; av.textContent=s.initials;
-    var gradMap={"grad-0":"linear-gradient(160deg,#ff9a76,#c23a35)","grad-1":"linear-gradient(160deg,#f2b25c,#dd6a2d)","grad-2":"linear-gradient(160deg,#cf9bf2,#60379c)","grad-3":"linear-gradient(160deg,#8fe095,#2a7433)","grad-4":"linear-gradient(160deg,#7fd8e8,#20689c)","grad-5":"linear-gradient(160deg,#5d9cec,#2f6fd6)","grad-6":"linear-gradient(160deg,#f79bc0,#a8255a)"};
-    $("storyViewer").style.background=gradMap[s.grad]||gradMap["grad-5"];
-    $("storyViewer").classList.add("open"); return;
-  }
-  if((t=e.target.closest("[data-go]"))){ closeAllOverlays(); go(t.getAttribute("data-go")); return; }
-  if(e.target.closest("[data-back]")){ closeAllOverlays(); back(); return; }
-  if((t=e.target.closest("[data-pm]"))){ closeAllOverlays(); if(t.getAttribute("data-pm")==="profile"&&currentChat){ setProfile(currentChat); go("profile"); } return; }
-  if((t=e.target.closest("[data-toast]"))){ closeAllOverlays(); toast(t.getAttribute("data-toast")); return; }
-  if((t=e.target.closest("#profileHead [data-profile]"))){}
-});
-$("btnDrawer").addEventListener("click",openDrawer);
-$("scrim").addEventListener("click",closeDrawer);
-$("sheetScrim").addEventListener("click",closeSheet);
-$("btnStoryClose").addEventListener("click",function(){$("storyViewer").classList.remove("open");});
-$("storyViewer").addEventListener("click",function(e){ if(e.target.id==="storyViewer") $("storyViewer").classList.remove("open"); });
-$("btnTheme").addEventListener("click",function(){
-  var dark=document.body.classList.toggle("dark");
-  $("themeIcon").innerHTML=svg(dark?"sun":"moon");
-  toast(dark?"Dark theme on":"Light theme on");
-});
-document.querySelector('[data-profile="me"]').addEventListener("click",function(){
-  setProfile({name:"Alex Morgan",id:"me",status:"online",phone:"+1 555 010 1234",username:"@Alex Morgan",grad:"grad-1"});
-});
-$("chatbarId").addEventListener("click",function(){ if(currentChat){ setProfile(currentChat); go("profile"); }});
-$("btnProfileMsg").addEventListener("click",function(){ back(); });
-$("btnCall").addEventListener("click",function(){ toast("Calling "+(currentChat?currentChat.name:"")+"…"); });
-$("btnChatMore").addEventListener("click",function(e){ e.stopPropagation(); $("popupMenu").classList.toggle("open"); });
-$("btnProfileMore").addEventListener("click",function(e){ e.stopPropagation(); $("popupMenu").classList.toggle("open"); });
-document.addEventListener("click",function(e){ if(!e.target.closest("#popupMenu")) $("popupMenu").classList.remove("open"); });
-$("btnAttach").addEventListener("click",function(){ $("attachSheet").classList.add("open"); $("sheetScrim").classList.add("open"); });
-$("btnEmoji").addEventListener("click",function(){ var i=$("msgInput"); i.value+="😊"; i.dispatchEvent(new Event("input")); i.focus(); });
-
-/* Folder + generic tabs */
-$("folderTabs").addEventListener("click",function(e){
-  var tab=e.target.closest(".tab"); if(!tab) return;
-  this.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});
-  tab.classList.add("active"); currentFilter=tab.getAttribute("data-filter"); renderChats(currentFilter);
-});
-document.querySelectorAll(".tabs.underline").forEach(function(nav){
-  nav.addEventListener("click",function(e){
-    var tab=e.target.closest(".tab"); if(!tab) return;
-    nav.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");});
-    tab.classList.add("active");
+    tile.classList.add("selected");const badge=tile.querySelector(".attach-select");if(badge)badge.textContent=$$(".attach-tile.selected").length;
+    toast("Photo selected — tap it again to send");
   });
-});
-document.querySelectorAll(".chip").forEach(function(ch){
-  ch.addEventListener("click",function(){
-    ch.parentElement.querySelectorAll(".chip").forEach(function(x){x.classList.remove("active");});
-    ch.classList.add("active");
+  const ta=$("#msgInput");
+  ta.addEventListener("input",updateComposer);
+  ta.addEventListener("focus",closePanels);
+  ta.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#composer").requestSubmit();}});
+  $("#composer").addEventListener("submit",e=>{
+    e.preventDefault();const text=ta.value.trim();
+    if(!text){toast("Hold to record a voice message");return;}
+    const quote=replyText?["Reply to",replyText]:null;
+    appendMessage(msgOut(text.replace(/</g,"&lt;").replace(/\n/g,"<br>"),{quote}));
+    const c=getChat(currentChatId);c.preview=text;c.time="9:41";c.ticks=true;renderChats($("#folderRow .active")?.dataset.folder||"all");
+    ta.value="";replyText="";$("#replyPreview").hidden=true;updateComposer();
   });
-});
-document.querySelectorAll(".tb-item").forEach(function(it){
-  it.addEventListener("click",function(){
-    it.parentElement.querySelectorAll(".tb-item").forEach(function(x){x.classList.remove("active");});
-    it.classList.add("active");
+  $("#btnCancelReply").addEventListener("click",()=>{replyText="";$("#replyPreview").hidden=true;});
+  $("#btnBotMenu").addEventListener("click",()=>{
+    openContext({reactions:false,items:[{label:"/Write — write to the editor",action:"bot-write",icon:"edit"},{label:"/About — about the channel",action:"bot-about",icon:"caption"},{label:"/Unsub — unsubscribe",action:"bot-unsub",icon:"x"}]});
   });
-});
-
-/* Search + contacts filter */
-$("searchInput").addEventListener("input",function(){ renderSearch(this.value.trim().toLowerCase()); });
-$("contactSearch").addEventListener("input",function(){ renderContacts(this.value.trim().toLowerCase()); });
-
-/* Send message */
-var replies=["Got it!","Sounds good to me.","Perfect — let's do it.","Nice! Exactly like the design.","Okay, sending the files now."],replyIdx=0;
-$("msgInput").addEventListener("input",function(){
-  var has=this.value.trim().length>0;
-  $("sendIcon").innerHTML=svg(has?"send":"mic");
-  $("btnSend").classList.toggle("sending",has);
-});
-$("inputForm").addEventListener("submit",function(e){
-  e.preventDefault();
-  var input=$("msgInput"),text=input.value.trim();
-  if(!text){ toast("Voice messages are disabled in this UI demo"); return; }
-  if(!currentChat) return;
-  var id=currentChat.id;
-  var list=messages[id]||(messages[id]=defaultMessages(currentChat));
-  var m={from:"out",text:text,time:nowStr(),ticks:1};
-  list.push(m); input.value=""; input.dispatchEvent(new Event("input"));
-  currentChat.preview=text; currentChat.mine=true; currentChat.ticks=1; currentChat.time=nowStr();
-  renderMessages(id);
-  setTimeout(function(){ m.ticks=2; currentChat.ticks=2; if(stack[stack.length-1]==="chat"&&currentChat&&currentChat.id===id) renderMessages(id); },900);
-  if(currentChat.type!=="channel"&&id!=="saved"&&id!=="telegram"){
-    var st=$("chatStatus");
-    setTimeout(function(){ if(currentChat&&currentChat.id===id){ st.textContent="typing…"; st.classList.add("typing"); } },1100);
-    setTimeout(function(){
-      list.push({from:"in",text:replies[replyIdx++%replies.length],time:nowStr()});
-      st.textContent=getChat(id).status||""; st.classList.remove("typing");
-      getChat(id).preview=list[list.length-1].text; getChat(id).mine=false;
-      if(stack[stack.length-1]==="chat"&&currentChat&&currentChat.id===id) renderMessages(id);
-    },2300);
-  }
-});
-
-/* Keyboard: Android/Desktop back emulation */
-document.addEventListener("keydown",function(e){ if(e.key==="Escape") window.onAndroidBack(); });
-
-/* Status bar clock */
-function clock(){ var d=new Date(),h=d.getHours()%12||12; $("sbTime").textContent=h+":"+("0"+d.getMinutes()).slice(-2); }
-clock(); setInterval(clock,30000);
-
-/* Init */
-renderStories(); renderChats("all"); renderContacts(""); renderCalls(); renderSearch(""); renderMedia();
-})();
+  $("#btnChannelMute").addEventListener("click",e=>{const b=e.currentTarget;b.textContent=b.textContent==="Mute"?"Unmute":"Mute";toast(b.textContent==="Mute"?"Channel unmuted":"Channel muted");});
+  $("#contextBackdrop").addEventListener("click",e=>{if(e.target.id==="contextBackdrop")closeContext();});
+  $("#reactionBar").addEventListener("click",e=>{const b=e.target.closest("[data-reaction]");if(b){addReactionToTarget(b.dataset.reaction);closeContext();}});
+  $("#contextMenu").addEventListener("click",e=>{
+    const b=e.target.closest("[data-context-action]");if(!b)return;const a=b.dataset.contextAction,text=$("#contextMenu").dataset.text||"";
+    if(a==="reply"){replyText=text.split("\n")[0].slice(0,80);$("#replyPreviewBody").textContent=replyText;$("#replyPreview").hidden=false;$("#msgInput").focus();}
+    else if(a==="copy"){navigator.clipboard?.writeText(text).catch(()=>{});toast("Copied");}
+    else if(a==="delete"){contextTarget?.remove();toast("Message deleted");}
+    else if(a==="edit"){$("#msgInput").value=text.replace(/\s*9:41.*$/,"");updateComposer();$("#msgInput").focus();}
+    else if(a==="delete-chat"){chats=chats.filter(c=>c.id!==text);renderChats();renderContacts();toast("Chat deleted");}
+    else if(a==="unread"){const c=getChat(text);c.unread=1;renderChats();toast("Marked as unread");}
+    else if(a.startsWith("bot-")){toast(a==="bot-unsub"?"Unsubscribed":"Catch News command");}
+    else toast(b.textContent.trim());
+    closeContext();
+  });
+  $("#messages").addEventListener("dblclick",e=>{const b=e.target.closest("[data-bubble]");if(b){contextTarget=b.closest(".msg-row");addReactionToTarget("❤️");contextTarget=null;}});
+  $("#btnCloseViewer").addEventListener("click",closeViewer);
+  $("#searchInput").addEventListener("input",e=>{
+    const q=e.target.value.trim().toLowerCase(),box=$("#searchResults");
+    if(!q){box.innerHTML="";$("#recentList").style.display="";return;}
+    $("#recentList").style.display="none";
+    const found=chats.filter(c=>c.name.toLowerCase().includes(q)||c.preview.toLowerCase().includes(q));
+    box.innerHTML=found.length?`<div class="recent-head"><span>RESULTS</span></div>`+found.map(chatRowHTML).join(""):`<div class="no-results">No results for “${q}”</div>`;
+  });
+  $("#btnClearRecent").addEventListener("click",()=>{$("#recentList").innerHTML="";toast("Recent cleared");});
+  $("#searchFilters").addEventListener("click",e=>{const b=e.target.closest("button");if(b)$$("#searchFilters button").forEach(x=>x.classList.toggle("active",x===b));});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closePanels();closeContext();closeViewer();}});
+}
+document.addEventListener("DOMContentLoaded",bind);

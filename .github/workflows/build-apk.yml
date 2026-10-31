@@ -44,8 +44,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-v${{ github.run_number }}
-          name: Telegram UI Kit APK (build ${{ github.run_number }})
+          name: Telegram iOS UI Kit APK (build ${{ github.run_number }})
           body: |
-            Installable debug APK of the Telegram Android UI Kit demo.
+            Installable debug APK with the Telegram iOS UI Kit appearance rebuilt from the user-supplied screenshots.
             Download `Telegram-UI-Kit.apk` below and open it on your Android phone to install.
+            If the previous build is already installed and Android refuses the update, uninstall the old build first (debug builds may be signed by a different runner key).
           files: Telegram-UI-Kit.apk
