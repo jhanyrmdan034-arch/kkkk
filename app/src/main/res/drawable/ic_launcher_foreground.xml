@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Paper plane -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M79.6,28.4 L24.8,49.5 c-2.4,0.95 -2.34,4.3 0.1,5.15 l12.7,4.2 L42.5,74 c0.62,1.95 3.1,2.5 4.5,1 l6.5,-6.9 12.5,9.2 c1.9,1.4 4.65,0.35 5.05,-1.9 L78,33.4 c0.45,-2.7 -2.1,-4.95 -4.05,-4.25 z M41.5,56.5 L67,40 c0.55,-0.35 1.1,0.45 0.6,0.85 L46.2,60.3 L45.4,68.2 z" />
+</vector>
